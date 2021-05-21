@@ -1,4 +1,6 @@
-﻿using AspNet.JwtLearning.Helpers;
+﻿using AspNet.JwtLearning.DAL;
+using AspNet.JwtLearning.Helpers;
+using AspNet.JwtLearning.Utility.Log;
 using Autofac;
 using Autofac.Integration.WebApi;
 using System;
@@ -14,37 +16,26 @@ namespace AspNet.JwtLearning.App_Start
         public static void ConfigureContainer()
         {
             var builder = new ContainerBuilder();
-
             try
-            {
-                //builder.RegisterControllers(Assembly.GetCallingAssembly());  //注册mvc控制器  需要引用package Autofac.Mvc
-                //builder.RegisterApiControllers(Assembly.GetExecutingAssembly()).PropertiesAutowired();  //支持Api控制器属性注入
-                builder.RegisterApiControllers(Assembly.GetCallingAssembly());  //注册所有api控制器  构造函数注入  需要引用package Autofac.WebApi
+            { 
+                //注册所有api控制器  
+                builder.RegisterApiControllers(Assembly.GetExecutingAssembly()); 
 
                 //注册 BLL
-                var assemblysServices = Assembly.Load("AspNet.JwtLearning.BLL");
-                builder.RegisterAssemblyTypes(assemblysServices)
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
+                builder.RegisterAssemblyTypes(Assembly.Load("AspNet.JwtLearning.BLL"));
 
                 //注册 DAL
-                var assemblysRepository = Assembly.Load("AspNet.JwtLearning.DAL");
-                builder.RegisterAssemblyTypes(assemblysRepository)
-                .AsImplementedInterfaces()
-
+                builder.RegisterAssemblyTypes(Assembly.Load("AspNet.JwtLearning.DAL"));
+                //.AsImplementedInterfaces();
+                //.InstancePerDependency();
                 //.SingleInstance();
                 //.InstancePerLifetimeScope();
 
-                .InstancePerDependency();
+                builder.RegisterType<AuthDbContext>().InstancePerRequest();
 
-                //注册 DbContext 为scope, to do
-
-                _container = builder.Build();   //创建依赖注入
-
-                //设置MVC依赖注入
-                //DependencyResolver.SetResolver(new AutofacDependencyResolver(_container));
-
-                //设置WebApi依赖注入
+                //编译一下
+                _container = builder.Build();  
+                //webapi整个的解析依赖,交给aufofac去解析 
                 GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(_container);
             }
             catch (Exception ex)
@@ -58,7 +49,7 @@ namespace AspNet.JwtLearning.App_Start
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetFromFac<T>()
+        public static T GetFromAutoFac<T>()
         {
             return _container.Resolve<T>();
         }

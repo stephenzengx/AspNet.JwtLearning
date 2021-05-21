@@ -1,5 +1,6 @@
-﻿namespace AspNet.JwtLearning.App_Start
+﻿namespace AspNet.JwtLearning.Utility.Log
 {
+
     public class MyFileAppender : log4net.Appender.RollingFileAppender
     {
         private bool isFirstTime = true;

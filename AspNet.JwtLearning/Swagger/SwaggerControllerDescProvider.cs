@@ -13,7 +13,7 @@ namespace Utils
     {
         private readonly ISwaggerProvider _swaggerProvider;
         private static ConcurrentDictionary<string, SwaggerDocument> _cache = new ConcurrentDictionary<string, SwaggerDocument>();
-        private readonly string _xml;
+        private readonly string _xmlPath;
         /// <summary>
         /// 
         /// </summary>
@@ -22,7 +22,7 @@ namespace Utils
         public SwaggerControllerDescProvider(ISwaggerProvider swaggerProvider, string xml)
         {
             _swaggerProvider = swaggerProvider;
-            _xml = xml;
+            _xmlPath = xml;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Utils
         /// <returns>所有控制器描述</returns>
         public ConcurrentDictionary<string, string> GetControllerDesc()
         {
-            string xmlpath = _xml;
+            string xmlpath = _xmlPath;
             ConcurrentDictionary<string, string> controllerDescDict = new ConcurrentDictionary<string, string>();
             if (File.Exists(xmlpath))
             {

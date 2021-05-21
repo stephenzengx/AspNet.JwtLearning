@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace AspNet.JwtLearning.Utility
+namespace AspNet.JwtLearning.Utility.Common
 {
     public class ConfigConst
     {

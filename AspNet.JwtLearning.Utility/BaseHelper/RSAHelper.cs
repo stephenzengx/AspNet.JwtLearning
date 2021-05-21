@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AspNet.JwtLearning.Utility
 {
-    public class RSAHelper_v2
+    public class RSAHelper
     {
         public static string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
 

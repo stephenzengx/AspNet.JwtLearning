@@ -4,7 +4,7 @@ using Swashbuckle.Application;
 using System;
 using AspNet.JwtLearning.Swagger;
 using Utils;
-using AspNet.JwtLearning.Utility;
+using AspNet.JwtLearning.Utility.Common;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
@@ -49,7 +49,7 @@ namespace AspNet.JwtLearning.Swagger
         /// <returns>System.String.</returns>
         private static string GetXmlCommentsPath()
         {
-            return $"{System.AppDomain.CurrentDomain.BaseDirectory}/bin/MyWebapi1.XML";
+            return $"{System.AppDomain.CurrentDomain.BaseDirectory}/bin/AspNet.JwtLearning.XML";
         }
     }
 }

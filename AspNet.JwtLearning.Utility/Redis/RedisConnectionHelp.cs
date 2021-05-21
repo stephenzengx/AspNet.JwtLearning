@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using AspNet.JwtLearning.Utility.Common;
+using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 using System.Configuration;

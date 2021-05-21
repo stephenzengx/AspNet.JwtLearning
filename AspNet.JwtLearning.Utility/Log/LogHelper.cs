@@ -1,4 +1,4 @@
-﻿namespace AspNet.JwtLearning.Helpers
+﻿namespace AspNet.JwtLearning.Utility.Log
 {
     public class LogHelper
     {

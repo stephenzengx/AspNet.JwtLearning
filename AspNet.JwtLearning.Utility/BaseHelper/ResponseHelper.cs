@@ -1,22 +1,17 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-//using System.Web.Http;
+﻿using System.Net;
 
 namespace AspNet.JwtLearning.Utility.BaseHelper
 {
-    public class ResultFactory
+    public class ResponseResult
     {
-        public class ResultClass
-        {
-            public HttpStatusCode HttpCode { get; set; } //http状态码
-            public int State { get; set; } //业务码
-            public string Message { get; set; }
-            public object Record { get; set; }
-        }
+        public HttpStatusCode HttpCode { get; set; } //http状态码
+        public int State { get; set; } //业务码
+        public string Message { get; set; }
+        public object Record { get; set; }
+    }
 
+    public static class ResponseHelper
+    {
         #region tips
         public static readonly string SUCCESS_ADD = "新增成功";
         public static readonly string SUCCESS_UPDATE = "更新成功";
@@ -29,9 +24,9 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         public static readonly string EXCEPTION_REQUEST = "请求异常,请检查";
         #endregion
 
-        public static ResultClass OkResponse(object obj, string message = "操作成功")
+        public static ResponseResult OkResponse(object obj = null,string message = "操作成功")
         {
-            return new ResultClass
+            return new ResponseResult
             {
                 HttpCode = HttpStatusCode.OK,
                 State = 0,
@@ -39,9 +34,9 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
                 Record = obj
             };
         }
-        public static ResultClass SuccessAddResponse(string id)
+        public static ResponseResult SuccessAddResponse(string id)
         {
-            return new ResultClass
+            return new ResponseResult
             {
                 HttpCode = HttpStatusCode.OK,
                 State = 0,
@@ -49,33 +44,33 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
                 Record = id
             };
         }
-        public static ResultClass SuccessUpdateResponse()
+        public static ResponseResult SuccessUpdateResponse()
         {
-            return new ResultClass
+            return new ResponseResult
             {
                 HttpCode = HttpStatusCode.OK,
                 State = 0,
                 Message = SUCCESS_UPDATE
             };
         }
-        public static ResultClass SuccessDeleteResponse()
+        public static ResponseResult SuccessDeleteResponse()
         {
             return OkResponse(SUCCESS_DELETE);
         }
 
-        public static ResultClass ErrorParamResponse(string apppend = "")
+        public static ResponseResult ErrorParamResponse(string apppend = "")
         {
             return GetErrorResponse(ERROR_PARAM + apppend);
         }
 
-        public static ResultClass ErrorDataNotFoundResponse()
+        public static ResponseResult ErrorDataNotFoundResponse()
         {
             return GetErrorResponse(ERROR_DATANOTFOUND);
         }
 
-        public static ResultClass GetErrorResponse(string errMessage = "系统异常", int state = -1, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        public static ResponseResult GetErrorResponse(string errMessage = "系统异常", int state = -1, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
-            return new ResultClass
+            return new ResponseResult
             {
                 HttpCode = statusCode,
                 State = -1,

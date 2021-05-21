@@ -3,16 +3,28 @@ using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using AspNet.JwtLearning.Utility.Log;
 
 namespace AspNet.JwtLearning.Utility.TokenHandle
 {
+    public static class CustomClaimTypes
+    {
+        public const string Userid = "userid";
+        public const string TimeStamp = "guid";
+    }
+
+    public class JwtContainerModel
+    {
+        //后续可以通过usreid,username 以及rolename进行授权 (放一些前端需要的常用信息)
+        public int UserId { get; set; }
+        public string TimeStamp { get; set; }
+    }
+
     /// <summary>
     /// JWTService
     /// </summary>
     public class JWTService 
     {
-        //扩展点，这里可以根据UserId 取模，或者Hash的值，分别对应不同的秘钥 to do 这样更安全
-        //秘钥可以放在数据库，拿出来后放在缓存(redis)
         private static string _secretKey { get; set; } = "XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ==";
         private static string _securityAlgorithm { get; set; } = SecurityAlgorithms.HmacSha256;//HS256 对称加密算法 
 
@@ -35,10 +47,9 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
                 Subject = new ClaimsIdentity(
                     new List<Claim> {
                       new Claim(CustomClaimTypes.Userid, model.UserId.ToString()),
-                      new Claim(CustomClaimTypes.Username, model.UserName),
-                      new Claim(CustomClaimTypes.Guid, Guid.NewGuid().ToString()),
+                      new Claim(CustomClaimTypes.TimeStamp, Guid.NewGuid().ToString()),
                 }),
-                //选择加密方式
+                //秘钥和加密方式
                 SigningCredentials = new SigningCredentials(securityKey, _securityAlgorithm),
                 Expires = DateTime.Now.AddMinutes(_tokenExpireMinToken)//过期时间
             };
@@ -56,10 +67,7 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
         /// <returns></returns>
         public static JwtContainerModel ValidateToken(string token)
         {
-            JwtContainerModel modelValidate = TransferToModel(token);
-
-            return modelValidate;
-            //return TokenValidateForRedis_v2(modelValidate, token) ? modelValidate : null;
+            return  TransferToModel(token);
         }
 
         /// <summary>
@@ -80,8 +88,7 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
             return new JwtContainerModel
             {
                 UserId = Convert.ToInt32(identity.FindFirst(CustomClaimTypes.Userid)?.Value),
-                UserName = identity.FindFirst(CustomClaimTypes.Username).Value,
-                Guid = identity.FindFirst(CustomClaimTypes.Guid).Value
+                TimeStamp = identity.FindFirst(CustomClaimTypes.TimeStamp).Value
             };
         }
 
@@ -108,6 +115,7 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
             }            
             catch (Exception e)
             {
+                LogHelper.WriteLog((e.InnerException == null ? e.Message : e.InnerException.Message) + e.StackTrace);
                 return null;
             }
         }

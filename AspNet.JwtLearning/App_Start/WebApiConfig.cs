@@ -14,13 +14,10 @@ namespace AspNet.JwtLearning.App_Start
             config.MapHttpAttributeRoutes();
 
             //action拦截器
-            config.Filters.Add(new ActionFilter());
+            //config.Filters.Add(new ActionFilter());
 
             //全局异常处理
             config.Filters.Add(new GlobalExceptionFilter());
-
-            // Web API 路由
-            config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

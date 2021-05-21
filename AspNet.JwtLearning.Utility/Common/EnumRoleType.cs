@@ -1,4 +1,4 @@
-﻿namespace Utils.Enums
+﻿namespace AspNet.JwtLearning.Utility.Common
 {
     enum EnumRoleType
     {

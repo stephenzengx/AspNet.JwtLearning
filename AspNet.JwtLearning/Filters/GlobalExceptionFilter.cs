@@ -1,5 +1,6 @@
 ﻿using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Utility.BaseHelper;
+using AspNet.JwtLearning.Utility.Log;
 using System;
 using System.Web.Http.Filters;
 
@@ -18,8 +19,10 @@ namespace AspNet.JwtLearning.Filters
         {
             Exception e = actionExecutedContext.Exception;
 
+            LogHelper.WriteLog((e.InnerException == null ? e.Message : e.InnerException.Message) + e.StackTrace);
+
             actionExecutedContext.Response = ResponseFormat.GetResponse(
-                ResultFactory.GetErrorResponse(e.Message +(e.InnerException!=null ? ","+e.InnerException.Message:""),
+                ResponseHelper.GetErrorResponse((e.InnerException==null ? e.Message : e.InnerException.Message),
                 -1,
                 System.Net.HttpStatusCode.InternalServerError)
             );

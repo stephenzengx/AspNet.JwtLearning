@@ -1,4 +1,5 @@
-﻿using AspNet.JwtLearning.Utility.TokenHandle;
+﻿using AspNet.JwtLearning.Utility.Common;
+using AspNet.JwtLearning.Utility.TokenHandle;
 using System;
 
 namespace AspNet.JwtLearning.Utility.Redis

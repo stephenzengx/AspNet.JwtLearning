@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using AspNet.JwtLearning.Utility.BaseHelper;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Web.Http;
-using static AspNet.JwtLearning.Utility.BaseHelper.ResultFactory;
 
 namespace AspNet.JwtLearning.Helpers
 {
@@ -21,12 +19,12 @@ namespace AspNet.JwtLearning.Helpers
             serialSetting.DateFormatString = "yyyy-MM-dd HH:mm:ss";
         }
 
-        public static HttpResponseMessage GetResponse(ResultClass ret)
+        public static HttpResponseMessage GetResponse(ResponseResult ret)
         {
             return new HttpResponseMessage
             {
                 Content = new StringContent(
-                JsonConvert.SerializeObject(new ResultClass
+                JsonConvert.SerializeObject(new ResponseResult
                 {
                     State = 0,
                     Message = ret.Message,
@@ -38,6 +36,5 @@ namespace AspNet.JwtLearning.Helpers
                 
             };
         }
-
     }
 }

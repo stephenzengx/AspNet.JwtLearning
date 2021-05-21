@@ -42,6 +42,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserBLL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AspNet.JwtLearning.DAL\AspNet.JwtLearning.DAL.csproj">
+      <Project>{0D431D6C-F9DE-4B92-BA89-B2EC7FCB1FBA}</Project>
+      <Name>AspNet.JwtLearning.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.Models\AspNet.JwtLearning.Models.csproj">
+      <Project>{AD398507-0972-4459-8E80-E1BD3765FBB7}</Project>
+      <Name>AspNet.JwtLearning.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.Utility\AspNet.JwtLearning.Utility.csproj">
+      <Project>{3FB3012E-738E-47BE-974A-7C5774BD6F5C}</Project>
+      <Name>AspNet.JwtLearning.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

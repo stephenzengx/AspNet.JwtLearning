@@ -3,9 +3,16 @@ using System.Web.Http;
 
 namespace AspNet.JwtLearning.Controllers
 {
+    /// <summary>
+    /// 测试api控制器
+    /// </summary>
     public class ValuesController : ApiController
     {
-        // GET api/values
+        public ValuesController()
+        { 
+        
+        }
+
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
