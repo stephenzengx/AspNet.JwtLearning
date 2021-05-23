@@ -25,9 +25,9 @@ namespace AspNet.JwtLearning.App_Start
                 builder.RegisterAssemblyTypes(Assembly.Load("AspNet.JwtLearning.BLL"));
 
                 //注册 DAL
-                builder.RegisterAssemblyTypes(Assembly.Load("AspNet.JwtLearning.DAL"));
-                //.AsImplementedInterfaces();
-                //.InstancePerDependency();
+                builder.RegisterAssemblyTypes(Assembly.Load("AspNet.JwtLearning.DAL"))
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
                 //.SingleInstance();
                 //.InstancePerLifetimeScope();
 

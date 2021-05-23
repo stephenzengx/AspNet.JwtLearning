@@ -24,11 +24,12 @@ namespace AspNet.JwtLearning.Helpers
             return new HttpResponseMessage
             {
                 Content = new StringContent(
-                JsonConvert.SerializeObject(new ResponseResult
+                JsonConvert.SerializeObject(new ResponseClass
                 {
-                    State = 0,
-                    Message = ret.Message,
-                    Record = ret.Record
+                    Status = 0,
+                    Message = ret.ResponseClass.Message,
+                    Record = ret.ResponseClass.Record,
+                    TotalCount = ret.ResponseClass.TotalCount
                 }, serialSetting),
 
                 System.Text.Encoding.GetEncoding("UTF-8"), "application/json"),

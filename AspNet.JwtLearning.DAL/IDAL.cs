@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq.Expressions;
 
 namespace AspNet.JwtLearning.DAL
@@ -7,9 +8,11 @@ namespace AspNet.JwtLearning.DAL
     public interface IDAL<T> where T :class
     {
 
-        T FirstOrDefault(Expression<Func<T, bool>> whereExpression);
+        T FirstOrDefault(Expression<Func<T, bool>> wherePredicate);
 
-        bool Any(Expression<Func<T, bool>> whereExpression);
+        bool Any(Expression<Func<T, bool>> wherePredicate);
+
+        int Count(Expression<Func<T, bool>> wherePredicate);
 
         bool Add(T entity);
 
@@ -17,8 +20,9 @@ namespace AspNet.JwtLearning.DAL
 
         bool Delete(int Id);
 
-        List<T> GetList(Expression<Func<T, bool>> whereExpression);
+        List<T> GetList(Expression<Func<T, bool>> wherePredicate);
 
-        List<T> GetListByPage(int pageIndex, int pageSize, Expression<Func<T, bool>> whereExpression, Expression<Func<T, bool>> orderExpression);
+        //默认升序
+        List<T> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<T, bool>> wherePredicate, Expression<Func<T, TOrderFiled>> orderExpression, out int totalCount, SortOrder sortOrder);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Swashbuckle.Swagger;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
 using System.Web.Http.Description;
 
 namespace Utils
@@ -11,14 +13,19 @@ namespace Utils
             if (operation.parameters == null)
                 operation.parameters = new List<Parameter>();
 
-            operation.parameters.Add(new Parameter
+            //匿名方法
+            var allowAnonymous = apiDescription.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any();
+            if (!allowAnonymous)
             {
-                name = "Authorization",
-                @in = "header",
-                type = "string",
-                description = "Authorization token in header",
-                required = true
-            });
+                operation.parameters.Add(new Parameter
+                {
+                    name = "Authorization",
+                    @in = "header",
+                    type = "string",
+                    description = "Authorization token in header",
+                    required = true
+                });
+            }
         }
-        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq.Expressions;
 
 using AspNet.JwtLearning.DAL;
@@ -22,6 +23,11 @@ namespace AspNet.JwtLearning.BLL
         }
 
         #region 基础方法
+        public int Count(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        {
+            return userDAL.Count(wherePredicate);
+        }
+
         public bool Add(tb_tenant_user entity)
         {
             return userDAL.Add(entity);
@@ -32,24 +38,26 @@ namespace AspNet.JwtLearning.BLL
             return userDAL.Update(entity);
         }
 
+
         public bool Delete(int id)
         {
             return userDAL.Delete(id);
         }
 
-        public tb_tenant_user FirstOrDefault(Expression<Func<tb_tenant_user, bool>> whereExpression)
+        public tb_tenant_user FirstOrDefault(Expression<Func<tb_tenant_user, bool>> wherePredicate)
         {
-            return userDAL.FirstOrDefault(whereExpression);
+            return userDAL.FirstOrDefault(wherePredicate);
         }
 
-        public List<tb_tenant_user> GetList(Expression<Func<tb_tenant_user, bool>> whereExpression)
+        public List<tb_tenant_user> GetList(Expression<Func<tb_tenant_user, bool>> wherePredicate)
         {
-            return userDAL.GetList(whereExpression);
+            return userDAL.GetList(wherePredicate);
         }
 
-        public List<tb_tenant_user> GetListByPage(int pageIndex, int pageSize, Expression<Func<tb_tenant_user, bool>> whereExpression, Expression<Func<tb_tenant_user, bool>> orderExpression)
+
+        public List<tb_tenant_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_tenant_user, bool>> wherePredicate, Expression<Func<tb_tenant_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
         {
-            return userDAL.GetListByPage(pageIndex, pageSize, whereExpression, orderExpression);
+            return userDAL.GetListByPage(pageIndex, pageSize, wherePredicate, orderPredicate,out totalCount, sortOrder);
         }
         #endregion
 
@@ -60,16 +68,16 @@ namespace AspNet.JwtLearning.BLL
         /// <returns></returns>
         public ResponseResult Login(LoginModel model)
         {
-            if (model == null || string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Password))
+            if (model == null || string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PassWord))
             {
                 return ResponseHelper.GetErrorResponse("用户名或密码错误");
             }
 
             var checkUserName = RSAHelper.Decrypt(model.UserName);
-            var checkPassWord = RSAHelper.Decrypt(model.Password);
+            var checkPassWord = RSAHelper.Decrypt(model.PassWord);
 
             //1非对称解密前端. 2-加密密码保存 3下次请求api资源，前端直接通过token 跟redis里面token对比
-            tb_tenant_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName);
+            tb_tenant_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName && m.isEnable);
 
             if (findUser == null)
                 return ResponseHelper.GetErrorResponse("用户名或者密码错误");
@@ -84,7 +92,7 @@ namespace AspNet.JwtLearning.BLL
                 TimeStamp = Utils.GetTimeStamp() 
             };
 
-            return ResponseHelper.OkResponse(JWTService.GenerateToken(jwtModel));
+            return ResponseHelper.GetOkResponse(JWTService.GenerateToken(jwtModel));
         }
 
         /// <summary>
@@ -105,10 +113,10 @@ namespace AspNet.JwtLearning.BLL
 
             user.userName = realUserName;
             user.addTime = DateTime.Now;
-            if (userDAL.Add(user))
+            if (!userDAL.Add(user))
                 return ResponseHelper.GetErrorResponse("系统异常,请稍后重试");
                 
-            return ResponseHelper.OkResponse("创建用户成功");
+            return ResponseHelper.GetOkResponse("创建用户成功");
         }
     }
 }

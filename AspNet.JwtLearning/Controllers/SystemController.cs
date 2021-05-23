@@ -1,9 +1,10 @@
-﻿using AspNet.JwtLearning.Helpers;
+﻿using System.Net.Http;
+using System.Web.Http;
+
+using AspNet.JwtLearning.BLL;
+using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Models;
 using AspNet.JwtLearning.Models.AdminEntity;
-using AspNet.JwtLearning.Utility.BaseHelper;
-using System.Net.Http;
-using System.Web.Http;
 
 namespace AspNet.JwtLearning.Controllers
 {
@@ -12,23 +13,23 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class SystemController : ApiController
     {
-        //public UserBLL userBLL;
+        public UserBLL userBLL;
 
-        //public SystemController(UserBLL userBLL)
-        //{
-        //    this.userBLL = userBLL;
-        //}
-
+        public SystemController(UserBLL userBLL)//
+        {
+            this.userBLL = userBLL;
+        }
+        
         /// <summary>
         /// 登录
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Login([FromBody]LoginModel user)
+        [AllowAnonymous]
+        public HttpResponseMessage Login([FromBody] LoginModel user)
         {
-            //var ret = userBLL.Login(user);
-            var ret = new ResponseResult();
+            var ret = userBLL.Login(user);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -39,10 +40,10 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Register([FromBody]tb_tenant_user user)
+        [AllowAnonymous]
+        public HttpResponseMessage Register([FromBody] tb_tenant_user user)
         {
-            //var ret = userBLL.Register(user);
-            var ret = new ResponseResult();
+            var ret = userBLL.Register(user);
 
             return ResponseFormat.GetResponse(ret);
         }

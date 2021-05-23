@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using AspNet.JwtLearning.Utility.Log;
+using AspNet.JwtLearning.Utility.Common;
 
 namespace AspNet.JwtLearning.Utility.TokenHandle
 {
@@ -47,7 +48,7 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
                 Subject = new ClaimsIdentity(
                     new List<Claim> {
                       new Claim(CustomClaimTypes.Userid, model.UserId.ToString()),
-                      new Claim(CustomClaimTypes.TimeStamp, Guid.NewGuid().ToString()),
+                      new Claim(CustomClaimTypes.TimeStamp, model.TimeStamp),
                 }),
                 //秘钥和加密方式
                 SigningCredentials = new SigningCredentials(securityKey, _securityAlgorithm),

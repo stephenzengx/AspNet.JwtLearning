@@ -73,6 +73,10 @@
       <Project>{ad398507-0972-4459-8e80-e1bd3765fbb7}</Project>
       <Name>AspNet.JwtLearning.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.Utility\AspNet.JwtLearning.Utility.csproj">
+      <Project>{3fb3012e-738e-47be-974a-7c5774bd6f5c}</Project>
+      <Name>AspNet.JwtLearning.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -4,10 +4,16 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
 {
     public class ResponseResult
     {
+        public ResponseClass ResponseClass { get; set; }
         public HttpStatusCode HttpCode { get; set; } //http状态码
-        public int State { get; set; } //业务码
+    }
+
+    public class ResponseClass
+    {    
+        public int Status { get; set; } //业务码
         public string Message { get; set; }
         public object Record { get; set; }
+        public int TotalCount { get; set; }
     }
 
     public static class ResponseHelper
@@ -24,38 +30,63 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         public static readonly string EXCEPTION_REQUEST = "请求异常,请检查";
         #endregion
 
-        public static ResponseResult OkResponse(object obj = null,string message = "操作成功")
+        public static ResponseResult GetOkResponse(object obj = null,string message = "操作成功")
         {
             return new ResponseResult
             {
-                HttpCode = HttpStatusCode.OK,
-                State = 0,
-                Message = message,
-                Record = obj
+                ResponseClass = new ResponseClass
+                {
+                    Status = 0,
+                    Message = message,
+                    Record = obj
+                },
+                HttpCode = HttpStatusCode.OK
             };
         }
+
+        public static ResponseResult GetListPageResponse(object obj,int totalCount, string message = "查询成功")
+        {
+            return new ResponseResult
+            {
+                ResponseClass = new ResponseClass
+                {
+                    Status = 0,
+                    Message = message,
+                    Record = obj,
+                    TotalCount = totalCount
+                },
+                HttpCode = HttpStatusCode.OK
+            };
+        }
+
         public static ResponseResult SuccessAddResponse(string id)
         {
             return new ResponseResult
             {
-                HttpCode = HttpStatusCode.OK,
-                State = 0,
-                Message = SUCCESS_ADD,
-                Record = id
+                ResponseClass = new ResponseClass
+                {
+                    Status = 0,
+                    Message = SUCCESS_ADD,
+                    Record = id
+                },
+                HttpCode = HttpStatusCode.OK
             };
         }
         public static ResponseResult SuccessUpdateResponse()
         {
             return new ResponseResult
             {
-                HttpCode = HttpStatusCode.OK,
-                State = 0,
-                Message = SUCCESS_UPDATE
+                ResponseClass = new ResponseClass
+                {
+                    Status = 0,
+                    Message = SUCCESS_UPDATE
+                },
+                HttpCode = HttpStatusCode.OK
             };
         }
         public static ResponseResult SuccessDeleteResponse()
         {
-            return OkResponse(SUCCESS_DELETE);
+            return GetOkResponse(SUCCESS_DELETE);
         }
 
         public static ResponseResult ErrorParamResponse(string apppend = "")
@@ -68,13 +99,16 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
             return GetErrorResponse(ERROR_DATANOTFOUND);
         }
 
-        public static ResponseResult GetErrorResponse(string errMessage = "系统异常", int state = -1, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        public static ResponseResult GetErrorResponse(string errMessage = "系统异常", int status = -1, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
             return new ResponseResult
             {
-                HttpCode = statusCode,
-                State = -1,
-                Message = errMessage
+                ResponseClass = new ResponseClass
+                {
+                    Status = status,
+                    Message = errMessage
+                },
+                HttpCode = statusCode
             };
         }
     }
