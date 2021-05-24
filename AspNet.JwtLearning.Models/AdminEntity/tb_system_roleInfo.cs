@@ -14,7 +14,8 @@ namespace AspNet.JwtLearning.Models.AdminEntity
         public int roleId { get; set; }
         public string roleName { get; set; }
         public int tenantId { get; set; }
-        public int roleType { get; set; }//超级管理员，系统管理员，普通用户等
+        //这个字段注释掉,由每个角色管理员自己去添加各自的角色，角色绑定租户
+        //public int roleType { get; set; }//超级管理员，系统管理员，普通用户等
         public string dutyRemark { get; set; }
         public DateTime addTime { get; set; }
         public DateTime upateTime { get; set; }

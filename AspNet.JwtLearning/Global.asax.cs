@@ -10,6 +10,8 @@ namespace AspNet.JwtLearning
             AutofacConfig.ConfigureContainer();
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            //加载数据数据进入redis to do...
         }
     }
 }
