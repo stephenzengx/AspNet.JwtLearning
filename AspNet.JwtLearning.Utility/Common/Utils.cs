@@ -1,6 +1,8 @@
-﻿using System;
+﻿using AspNet.JwtLearning.Models.Tree;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 
 namespace AspNet.JwtLearning.Utility.Common
@@ -47,6 +49,50 @@ namespace AspNet.JwtLearning.Utility.Common
             }
 
             return obList;
+        }
+
+        public static List<TreeNode> GetChildrenTree(int curNodeId, List<Node> allNode)
+        {
+            if (allNode == null || allNode.Count <= 0)
+                return new List<TreeNode>();
+
+            List<TreeNode> TreeList = new List<TreeNode>();
+            List<Node> children = allNode.Where(s => s.ParentId == curNodeId).ToList();
+            foreach (var ent in children)
+            {
+                TreeNode treeNode = new TreeNode();
+                treeNode.NodeId = ent.NodeId;
+                treeNode.Label = ent.Label;
+                treeNode.ParentId = ent.ParentId;
+                treeNode.Children = GetChildrenTree(ent.NodeId, allNode);
+                TreeList.Add(treeNode);
+            }
+
+            return TreeList;
+        }
+
+        /// <summary>
+        /// 通过curNodeId 获取自己以及递归下的所有子Node (用于删除功能等)
+        /// </summary>
+        /// <param name="curNodeId"></param>
+        /// <param name="allNode"></param>
+        /// <returns></returns>
+        public static List<Node> GetRecurNodes(int curNodeId, List<Node> allNode)
+        {
+            if (curNodeId <= 0 || allNode == null)
+            {
+                return null;
+            }
+            List<Node> list = new List<Node>();
+            if (allNode.FirstOrDefault((m => m.NodeId == curNodeId)) != null)
+                list.Add(allNode.FirstOrDefault((m => m.NodeId == curNodeId)));
+            List<Node> firstLevelNodes = allNode.Where(m => m.ParentId == curNodeId).ToList();
+            foreach (var node in firstLevelNodes)
+            {
+                list.AddRange(GetRecurNodes(node.NodeId, allNode));
+            }
+
+            return list;
         }
     }
 }

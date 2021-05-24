@@ -19,7 +19,7 @@ namespace AspNet.JwtLearning.Models.AdminEntity
         public string email { get; set; }
         public bool isAllowMultLogin { get; set; }//实现是否允许多端登录  to do
         public DateTime addTime { get; set; }
-        public DateTime upateTime { get; set; }
+        public DateTime updateTime { get; set; }
         public bool isEnable { get; set; }
     }
 }

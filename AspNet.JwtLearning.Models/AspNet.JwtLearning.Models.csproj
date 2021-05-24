@@ -53,6 +53,9 @@
     <Compile Include="AdminEntity\tb_tenant_user.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tree\TreeNode.cs" />
+    <Compile Include="Tree\Node.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

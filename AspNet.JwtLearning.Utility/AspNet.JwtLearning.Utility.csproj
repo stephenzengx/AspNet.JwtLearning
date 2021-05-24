@@ -123,6 +123,11 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AspNet.JwtLearning.Models\AspNet.JwtLearning.Models.csproj">
+      <Project>{AD398507-0972-4459-8E80-E1BD3765FBB7}</Project>
+      <Name>AspNet.JwtLearning.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

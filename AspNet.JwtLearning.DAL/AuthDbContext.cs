@@ -14,6 +14,12 @@ namespace AspNet.JwtLearning.DAL
         更新了实体：
         Add-Migration udpv1
         Update-Database -Verbose
+
+        //联合主键
+        [Key,Column(Order =1)]
+        public int Id1 { get; set; }
+        [Key,Column(Order = 2)]
+        public int Id2 { get; set; }
     */
 
 

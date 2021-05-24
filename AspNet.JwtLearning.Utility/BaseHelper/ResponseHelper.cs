@@ -86,7 +86,7 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         }
         public static ResponseResult SuccessDeleteResponse()
         {
-            return GetOkResponse(SUCCESS_DELETE);
+            return GetOkResponse(null, SUCCESS_DELETE);
         }
 
         public static ResponseResult ErrorParamResponse(string apppend = "")

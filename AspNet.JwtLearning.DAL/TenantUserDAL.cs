@@ -44,7 +44,15 @@ namespace AspNet.JwtLearning.DAL
 
         public bool Update(tb_tenant_user entity)
         {
-            authDbContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+            var findUser = FirstOrDefault(m=>m.userId == entity.userId);
+            if (findUser == null)
+                throw new KeyNotFoundException("userId not found");
+            //authDbContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+            findUser.userName = entity.userName;
+            findUser.age = entity.age;
+            findUser.phone = entity.phone;
+            findUser.email = entity.email;
+            findUser.userName = entity.userName;
 
             return authDbContext.SaveChanges() > 0;
         }

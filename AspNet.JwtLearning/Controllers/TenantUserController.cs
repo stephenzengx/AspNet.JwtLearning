@@ -3,8 +3,8 @@ using System.Web.Http;
 
 using AspNet.JwtLearning.BLL;
 using AspNet.JwtLearning.Helpers;
-using AspNet.JwtLearning.Models;
 using AspNet.JwtLearning.Models.AdminEntity;
+using AspNet.JwtLearning.Utility;
 using AspNet.JwtLearning.Utility.BaseHelper;
 
 namespace AspNet.JwtLearning.Controllers
@@ -14,13 +14,26 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class TenantUserController : ApiController
     {
+        /// <summary>
+        /// userBLL
+        /// </summary>
         public UserBLL userBLL;
 
+        /// <summary>
+        /// 构造方法 ioc容器注入
+        /// </summary>
+        /// <param name="userBLL"></param>
         public TenantUserController(UserBLL userBLL)
         {
             this.userBLL = userBLL;
         }
 
+        /// <summary>
+        /// 获取分页列表信息
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
         public HttpResponseMessage ListByPage(int pageIndex, int pageSize)
         {
@@ -38,42 +51,55 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public string Get(int userId)
+        public HttpResponseMessage GetOne(int userId)
         {
-            return "value get";
+            var ret = userBLL.FirstOrDefault(m => m.userId == userId);
+            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(ret));
         }
 
         /// <summary>
         /// 新增租户用户信息
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public string Post([FromBody] string value)
+        public HttpResponseMessage Post([FromBody] tb_tenant_user user)
         {
-            return "value post";
+            user.isEnable = true;
+            user.passWord = RSAHelper.Encrypt(user.passWord);
+
+            bool ret = userBLL.Add(user);
+            var respRet = (ret ? ResponseHelper.SuccessAddResponse(user.userId.ToString()) : ResponseHelper.GetErrorResponse());
+
+            return ResponseFormat.GetResponse(respRet);
         }
 
         /// <summary>
         /// 修改租户用户信息
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        public string Put([FromBody] string value)
+        public HttpResponseMessage Put([FromBody] tb_tenant_user user)
         {
-            return "value put";
+            bool ret = userBLL.Update(user);
+            var respRet = (ret ? ResponseHelper.SuccessUpdateResponse() : ResponseHelper.GetErrorResponse());
+
+            return ResponseFormat.GetResponse(respRet);
         }
 
         /// <summary>
         /// 删除租户用户信息
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public string Delete(int id)
+        public HttpResponseMessage Delete(int userId)
         {
-            return "value delete";
+            bool ret = userBLL.Delete(userId);
+            var respRet = (ret ? ResponseHelper.SuccessDeleteResponse() : ResponseHelper.GetErrorResponse());
+
+            return ResponseFormat.GetResponse(respRet);
         }
     }
 }

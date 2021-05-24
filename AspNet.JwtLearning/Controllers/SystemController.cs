@@ -15,7 +15,7 @@ namespace AspNet.JwtLearning.Controllers
     {
         public UserBLL userBLL;
 
-        public SystemController(UserBLL userBLL)//
+        public SystemController(UserBLL userBLL)
         {
             this.userBLL = userBLL;
         }

@@ -38,7 +38,6 @@ namespace AspNet.JwtLearning.BLL
             return userDAL.Update(entity);
         }
 
-
         public bool Delete(int id)
         {
             return userDAL.Delete(id);
@@ -117,6 +116,11 @@ namespace AspNet.JwtLearning.BLL
                 return ResponseHelper.GetErrorResponse("系统异常,请稍后重试");
                 
             return ResponseHelper.GetOkResponse("创建用户成功");
+        }
+
+        public ResponseResult SysMenu()
+        {
+            return new ResponseResult();
         }
     }
 }
