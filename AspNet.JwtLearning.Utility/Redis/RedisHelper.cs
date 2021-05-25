@@ -1,5 +1,4 @@
-﻿using AspNet.JwtLearning.Utility.Redis;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -35,8 +34,8 @@ namespace AspNet.JwtLearning.Utility.Redis
         {
             DbNum = dbNum;
             _conn = string.IsNullOrWhiteSpace(readWriteHosts) ?
-                    RedisConnectionHelp.GetConnectionMultiplexer() :
-                    RedisConnectionHelp.GetConnectionMultiplexer(readWriteHosts);
+                    RedisConnectionHelper.GetConnectionMultiplexer() :
+                    RedisConnectionHelper.GetConnectionMultiplexer(readWriteHosts);
         }
 
         #endregion 构造函数
@@ -52,7 +51,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <param name="value">保存的值</param>
         /// <param name="expiry">过期时间</param>
         /// <returns></returns>
-        public bool StringSet(string key, string value, TimeSpan? expiry = default(TimeSpan?))
+        public bool StringSet(string key, string value, TimeSpan? expiry = default)
         {
             //key = AddSysCustomKey(key);
             return Do(db => db.StringSet(key, value, expiry));
@@ -77,7 +76,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <param name="obj"></param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public bool StringSet<T>(string key, T obj, TimeSpan? expiry = default(TimeSpan?))
+        public bool StringSet<T>(string key, T obj, TimeSpan? expiry = default)
         {
             key = AddSysCustomKey(key);
             string json = ConvertJson(obj);
@@ -153,7 +152,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <param name="value">保存的值</param>
         /// <param name="expiry">过期时间</param>
         /// <returns></returns>
-        public async Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry = default(TimeSpan?))
+        public async Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry = default)
         {
             key = AddSysCustomKey(key);
             return await Do(db => db.StringSetAsync(key, value, expiry));
@@ -179,7 +178,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <param name="obj"></param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public async Task<bool> StringSetAsync<T>(string key, T obj, TimeSpan? expiry = default(TimeSpan?))
+        public async Task<bool> StringSetAsync<T>(string key, T obj, TimeSpan? expiry = default)
         {
             key = AddSysCustomKey(key);
             string json = ConvertJson(obj);
@@ -864,7 +863,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <param name="key">redis key</param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public bool KeyExpire(string key, TimeSpan? expiry = default(TimeSpan?))
+        public bool KeyExpire(string key, TimeSpan? expiry = default)
         {
             key = AddSysCustomKey(key);
             return Do(db => db.KeyExpire(key, expiry));
@@ -995,7 +994,7 @@ namespace AspNet.JwtLearning.Utility.Redis
         /// <returns></returns>
         private string AddSysCustomKey(string oldKey)
         {
-            var prefixKey = CustomKey ?? RedisConnectionHelp.SysCustomKey;
+            var prefixKey = CustomKey ?? RedisConnectionHelper.SysCustomKey;
             return prefixKey + oldKey;
         }
 

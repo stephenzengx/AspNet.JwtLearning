@@ -9,7 +9,7 @@ namespace AspNet.JwtLearning.Utility.Redis
     /// <summary>
     /// ConnectionMultiplexer对象管理帮助类
     /// </summary>
-    public static class RedisConnectionHelp
+    public static class RedisConnectionHelper
     {
         //系统自定义Key前缀
         public static readonly string SysCustomKey = ConfigurationManager.AppSettings["redisKey"] ?? "";

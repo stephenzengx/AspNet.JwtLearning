@@ -10,7 +10,6 @@ namespace AspNet.JwtLearning.Models.AdminEntity
     public class tb_system_roleInfo
     {        
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
         public int roleId { get; set; }
         public string roleName { get; set; }
         public int tenantId { get; set; }

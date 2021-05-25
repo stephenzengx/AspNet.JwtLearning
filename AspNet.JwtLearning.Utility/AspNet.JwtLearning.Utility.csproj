@@ -114,7 +114,7 @@
     <Compile Include="Log\MyFileAppender.cs" />
     <Compile Include="MethodExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Redis\RedisConnectionHelp.cs" />
+    <Compile Include="Redis\RedisConnectionHelper.cs" />
     <Compile Include="Redis\RedisHelper.cs" />
     <Compile Include="Redis\UserTokenManger.cs" />
     <Compile Include="TokenHandle\JWTService.cs" />

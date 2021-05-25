@@ -31,7 +31,7 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage SystemMenu()
+        public HttpResponseMessage AdminMenu()
         {
             List<TreeNode> treeNodeList = new List<TreeNode>();
             List<Node> allNode  = authDbContext.Database
@@ -43,9 +43,9 @@ namespace AspNet.JwtLearning.Controllers
             foreach (var ent in rootList)
             {
                 TreeNode treeNode = new TreeNode();
-                treeNode.NodeId = ent.NodeId;
-                treeNode.Label = ent.Label;
-                treeNode.ParentId = ent.ParentId;
+                treeNode.NodeId = ent.NodeId;   
+                treeNode.MenuName = ent.Label;
+                //treeNode.ParentId = ent.ParentId;
                 treeNode.Children = Utility.Common.Utils.GetChildrenTree(ent.NodeId, allNode);
                 treeNodeList.Add(treeNode);
             }

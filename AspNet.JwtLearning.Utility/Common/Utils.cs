@@ -62,13 +62,30 @@ namespace AspNet.JwtLearning.Utility.Common
             {
                 TreeNode treeNode = new TreeNode();
                 treeNode.NodeId = ent.NodeId;
-                treeNode.Label = ent.Label;
-                treeNode.ParentId = ent.ParentId;
+                treeNode.MenuName = ent.Label;
+                //treeNode.ParentId = ent.ParentId;
                 treeNode.Children = GetChildrenTree(ent.NodeId, allNode);
                 TreeList.Add(treeNode);
             }
 
             return TreeList;
+        }
+
+        /// <summary>
+        /// 获取某个节点的根节点
+        /// </summary>
+        /// <param name="curNodeId"></param>
+        /// <param name="allNode"></param>
+        /// <returns></returns>
+        public static Node GetRootNode(int curNodeId, List<Node> allNode)
+        {
+            var node = allNode.FirstOrDefault(m => m.NodeId == curNodeId);
+            if (node == null)
+                throw new DataException("notfound parent node of curNodeId:" + curNodeId);
+            else if (node.ParentId == 0)
+                return node;
+
+            return GetRootNode(node.NodeId, allNode);
         }
 
         /// <summary>

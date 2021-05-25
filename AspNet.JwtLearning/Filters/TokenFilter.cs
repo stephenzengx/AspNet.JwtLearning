@@ -18,6 +18,8 @@ namespace AspNet.JwtLearning.Filters
     /// </summary>
     public class TokenFilter : DelegatingHandler
     {
+        protected List<string> ignoreTokenUrlKey = new List<string> {"System", "Admin" };
+
         /// <summary>
         /// 重写方法, 拦截请求
         /// </summary>
@@ -27,12 +29,11 @@ namespace AspNet.JwtLearning.Filters
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var absPath = request.RequestUri.AbsolutePath;
-            if (absPath.Contains("swagger"))
+            if (absPath.Contains("swagger"))//swagger 放行
                 return await base.SendAsync(request, cancellationToken);
 
             IEnumerable<string> headerOriginList;
             request.Headers.TryGetValues("Origin", out headerOriginList);
-
             //预请求放行
             if (request.Method == HttpMethod.Options)
             {
@@ -52,11 +53,14 @@ namespace AspNet.JwtLearning.Filters
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,PUT,OPTIONS");
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Credentials", "true");
 
-            //登录注册-请求不用验证token 
+            //(system标头,业务系统)登录,注册,Admin(后台管理系统)- 请求不用验证token 
             //request.RequestUri.AbsolutePath -> api/userinfo
             //request.RequestUri.AbsoluteUri ->  http://localhost:59655/api/userinfo
-            if (absPath.Contains("System"))
-                return await base.SendAsync(request, cancellationToken);
+            foreach (var key in ignoreTokenUrlKey)
+            {
+                if (absPath.Contains(key))
+                    return await base.SendAsync(request, cancellationToken);
+            }
 
             IEnumerable<string> authHeads = null;
             if (!request.Headers.TryGetValues(ConfigConst.AuthHeaderName, out authHeads))

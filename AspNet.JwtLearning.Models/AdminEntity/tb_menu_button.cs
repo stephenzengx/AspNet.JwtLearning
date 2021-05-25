@@ -9,7 +9,6 @@ namespace AspNet.JwtLearning.Models.AdminEntity
     /// </summary>
     public class tb_menu_button
     {
-        //btnId,menuId,btnId,btnTxt,remark,addtime,updateTime,isEnable
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public int btnId { get; set; }
