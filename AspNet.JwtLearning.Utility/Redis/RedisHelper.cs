@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AspNet.JwtLearning.Utility.Common;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,15 @@ namespace AspNet.JwtLearning.Utility.Redis
     /// <summary>
     /// Redis操作
     /// </summary>
-    public class RedisHelper
+    public class RedisHelper : IDisposable
     {
         private int DbNum { get; set; }
         /// <summary>
         /// Redis连接
         /// </summary>
         private readonly ConnectionMultiplexer _conn;
+
+        private static string default_readWriteHosts = ConfigConst.RedisAddrFortest;
 
         /// <summary>
         /// 设置自定义键
@@ -26,8 +29,13 @@ namespace AspNet.JwtLearning.Utility.Redis
         #region 构造函数
 
         public RedisHelper(int dbNum = 0)
-            : this(dbNum, null)
+            : this(dbNum, default_readWriteHosts)
         {
+        }
+
+        public void Dispose()
+        {
+            _conn.Dispose();
         }
 
         public RedisHelper(int dbNum, string readWriteHosts)

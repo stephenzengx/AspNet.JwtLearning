@@ -59,14 +59,10 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data.Entity.EF6, Version=6.10.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\MySql.Data.Entity.EF6.dll</HintPath>
-    </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
     </Reference>
@@ -149,24 +145,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AspNet.JwtLearning.BLL\AspNet.JwtLearning.BLL.csproj">
-      <Project>{C41D853A-2016-44C6-924E-3237858E8DBC}</Project>
-      <Name>AspNet.JwtLearning.BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNet.JwtLearning.DAL\AspNet.JwtLearning.DAL.csproj">
-      <Project>{0D431D6C-F9DE-4B92-BA89-B2EC7FCB1FBA}</Project>
-      <Name>AspNet.JwtLearning.DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNet.JwtLearning.Models\AspNet.JwtLearning.Models.csproj">
-      <Project>{AD398507-0972-4459-8E80-E1BD3765FBB7}</Project>
-      <Name>AspNet.JwtLearning.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AspNet.JwtLearning.Utility\AspNet.JwtLearning.Utility.csproj">
-      <Project>{3fb3012e-738e-47be-974a-7c5774bd6f5c}</Project>
-      <Name>AspNet.JwtLearning.Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="KeyFile\private.key">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -175,7 +153,27 @@
     </Content>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AspNet.JwtLearning.BLL\AspNet.JwtLearning.BLL.csproj">
+      <Project>{c41d853a-2016-44c6-924e-3237858e8dbc}</Project>
+      <Name>AspNet.JwtLearning.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.DAL\AspNet.JwtLearning.DAL.csproj">
+      <Project>{0d431d6c-f9de-4b92-ba89-b2ec7fcb1fba}</Project>
+      <Name>AspNet.JwtLearning.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.Models\AspNet.JwtLearning.Models.csproj">
+      <Project>{ad398507-0972-4459-8e80-e1bd3765fbb7}</Project>
+      <Name>AspNet.JwtLearning.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNet.JwtLearning.Utility\AspNet.JwtLearning.Utility.csproj">
+      <Project>{3fb3012e-738e-47be-974a-7c5774bd6f5c}</Project>
+      <Name>AspNet.JwtLearning.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Log\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

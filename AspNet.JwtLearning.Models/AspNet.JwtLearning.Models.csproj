@@ -52,6 +52,7 @@
     <Compile Include="AdminEntity\tb_tenant_info.cs" />
     <Compile Include="AdminEntity\tb_tenant_user.cs" />
     <Compile Include="AdminEntity\tb_user_role.cs" />
+    <Compile Include="AdminModel\AdminRoleInfoClass.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tree\TreeNode.cs" />

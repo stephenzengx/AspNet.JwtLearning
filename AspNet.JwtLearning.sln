@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning", "AspNet.JwtLearning\AspNet.JwtLearning.csproj", "{681280FC-982B-4941-8FA4-EE5521D58C15}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning.BLL", "AspNet.JwtLearning.BLL\AspNet.JwtLearning.BLL.csproj", "{C41D853A-2016-44C6-924E-3237858E8DBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning.DAL", "AspNet.JwtLearning.DAL\AspNet.JwtLearning.DAL.csproj", "{0D431D6C-F9DE-4B92-BA89-B2EC7FCB1FBA}"
@@ -13,16 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning.Models",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning.Utility", "AspNet.JwtLearning.Utility\AspNet.JwtLearning.Utility.csproj", "{3FB3012E-738E-47BE-974A-7C5774BD6F5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.JwtLearning", "AspNet.JwtLearning\AspNet.JwtLearning.csproj", "{681280FC-982B-4941-8FA4-EE5521D58C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{681280FC-982B-4941-8FA4-EE5521D58C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{681280FC-982B-4941-8FA4-EE5521D58C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{681280FC-982B-4941-8FA4-EE5521D58C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{681280FC-982B-4941-8FA4-EE5521D58C15}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C41D853A-2016-44C6-924E-3237858E8DBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C41D853A-2016-44C6-924E-3237858E8DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C41D853A-2016-44C6-924E-3237858E8DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{3FB3012E-738E-47BE-974A-7C5774BD6F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB3012E-738E-47BE-974A-7C5774BD6F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB3012E-738E-47BE-974A-7C5774BD6F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{681280FC-982B-4941-8FA4-EE5521D58C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{681280FC-982B-4941-8FA4-EE5521D58C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{681280FC-982B-4941-8FA4-EE5521D58C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{681280FC-982B-4941-8FA4-EE5521D58C15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

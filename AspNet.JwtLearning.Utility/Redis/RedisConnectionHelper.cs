@@ -15,7 +15,6 @@ namespace AspNet.JwtLearning.Utility.Redis
         public static readonly string SysCustomKey = ConfigurationManager.AppSettings["redisKey"] ?? "";
 
         private static readonly string RedisConnectionString = ConfigConst.RedisAddrFortest;
-        private static readonly object Locker = new object();
 
         class Nested
         {

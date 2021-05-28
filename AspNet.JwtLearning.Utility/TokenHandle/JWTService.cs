@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using AspNet.JwtLearning.Utility.Log;
-using AspNet.JwtLearning.Utility.Common;
 
 namespace AspNet.JwtLearning.Utility.TokenHandle
 {
@@ -95,30 +93,22 @@ namespace AspNet.JwtLearning.Utility.TokenHandle
 
         private static ClaimsPrincipal GetPrincipal(string token)
         {
-            try
-            {
-                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-                JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
-                if (jwtToken == null)
-                    return null;
-
-                byte[] key = Convert.FromBase64String(_secretKey);
-                TokenValidationParameters parameters = new TokenValidationParameters()
-                {
-                    RequireExpirationTime = false,                     
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-                SecurityToken securityToken;                
-
-                return tokenHandler.ValidateToken(token, parameters, out securityToken);
-            }            
-            catch (Exception e)
-            {
-                LogHelper.WriteLog((e.InnerException == null ? e.Message : e.InnerException.Message) + e.StackTrace);
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
+            if (jwtToken == null)
                 return null;
-            }
+
+            byte[] key = Convert.FromBase64String(_secretKey);
+            TokenValidationParameters parameters = new TokenValidationParameters()
+            {
+                RequireExpirationTime = false,                     
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+            SecurityToken securityToken;                
+
+            return tokenHandler.ValidateToken(token, parameters, out securityToken);
         }
 
     }

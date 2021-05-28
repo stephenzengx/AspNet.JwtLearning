@@ -1,4 +1,4 @@
-﻿namespace AspNet.JwtLearning.Utility.Log
+﻿namespace AspNet.JwtLearning.App_Start
 {
     public class MyFileAppender : log4net.Appender.RollingFileAppender
     {

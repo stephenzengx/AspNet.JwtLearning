@@ -51,6 +51,12 @@ namespace AspNet.JwtLearning.Utility.Common
             return obList;
         }
 
+        /// <summary>
+        /// 获取某个节点下的节点树
+        /// </summary>
+        /// <param name="curNodeId"></param>
+        /// <param name="allNode"></param>
+        /// <returns></returns>
         public static List<TreeNode> GetChildrenTree(int curNodeId, List<Node> allNode)
         {
             if (allNode == null || allNode.Count <= 0)
@@ -62,13 +68,37 @@ namespace AspNet.JwtLearning.Utility.Common
             {
                 TreeNode treeNode = new TreeNode();
                 treeNode.NodeId = ent.NodeId;
-                treeNode.MenuName = ent.Label;
+                treeNode.NodeName = ent.NodeName;
                 //treeNode.ParentId = ent.ParentId;
                 treeNode.Children = GetChildrenTree(ent.NodeId, allNode);
                 TreeList.Add(treeNode);
             }
 
             return TreeList;
+        }
+
+
+        /// <summary>
+        /// 通过curNodeId 获取自己以及递归下的所有子Node (用于删除功能等)
+        /// </summary>
+        /// <param name="curNodeId"></param>
+        /// <param name="allNode"></param>
+        /// <returns></returns>
+        public static List<Node> GetRecurNodeList(int curNodeId, List<Node> allNode)
+        {
+            if (curNodeId <= 0 || allNode == null)
+                return null;
+
+            List<Node> list = new List<Node>();
+            if (allNode.FirstOrDefault((m => m.NodeId == curNodeId)) != null)
+                list.Add(allNode.FirstOrDefault((m => m.NodeId == curNodeId)));
+            List<Node> firstLevelNodes = allNode.Where(m => m.ParentId == curNodeId).ToList();
+            foreach (var node in firstLevelNodes)
+            {
+                list.AddRange(GetRecurNodeList(node.NodeId, allNode));
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -88,28 +118,5 @@ namespace AspNet.JwtLearning.Utility.Common
             return GetRootNode(node.NodeId, allNode);
         }
 
-        /// <summary>
-        /// 通过curNodeId 获取自己以及递归下的所有子Node (用于删除功能等)
-        /// </summary>
-        /// <param name="curNodeId"></param>
-        /// <param name="allNode"></param>
-        /// <returns></returns>
-        public static List<Node> GetRecurNodes(int curNodeId, List<Node> allNode)
-        {
-            if (curNodeId <= 0 || allNode == null)
-            {
-                return null;
-            }
-            List<Node> list = new List<Node>();
-            if (allNode.FirstOrDefault((m => m.NodeId == curNodeId)) != null)
-                list.Add(allNode.FirstOrDefault((m => m.NodeId == curNodeId)));
-            List<Node> firstLevelNodes = allNode.Where(m => m.ParentId == curNodeId).ToList();
-            foreach (var node in firstLevelNodes)
-            {
-                list.AddRange(GetRecurNodes(node.NodeId, allNode));
-            }
-
-            return list;
-        }
     }
 }

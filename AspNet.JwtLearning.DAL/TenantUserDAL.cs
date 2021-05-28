@@ -1,5 +1,4 @@
 ﻿using AspNet.JwtLearning.Models.AdminEntity;
-using AspNet.JwtLearning.Utility.Log;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -85,8 +84,6 @@ namespace AspNet.JwtLearning.DAL
                 throw new ArgumentOutOfRangeException("pageIndex", pageIndex, "The pageIndex is one-based and should be larger than zero.");
             if (pageSize <= 0)
                 throw new ArgumentOutOfRangeException("pageSize", pageSize, "The pageSize is one-based and should be larger than zero.");
-
-            authDbContext.Database.Log = LogHelper.WriteLog;
 
             var query = authDbContext.tb_tenant_users.Where(wherePredicate);
             int skip = (pageIndex - 1) * pageSize;

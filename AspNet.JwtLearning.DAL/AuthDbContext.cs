@@ -40,13 +40,16 @@ namespace AspNet.JwtLearning.DAL
 
         public DbSet<tb_tenant_info> tb_tenant_infos { get; set; }
         public DbSet<tb_tenant_user> tb_tenant_users { get; set; }
+
+        public DbSet<tb_user_role> tb_user_roles { get; set; }
+
         public DbSet<tb_system_roleInfo> tb_system_roleInfos { get; set; }
         public DbSet<tb_system_menu> tb_system_menus { get; set; }
         public DbSet<tb_tenantRole_accessMenu> tb_role_accessMenus { get; set; }
         public DbSet<tb_system_api> tb_system_apis { get; set; }
         public DbSet<tb_tenantRole_accessApi> tb_role_accessApis { get; set; }
-        public DbSet<tb_menu_button> tb_operation_infos { get; set; }
-        public DbSet<tb_tenantRole_Accessbtn> tb_role_menuAccessOpts { get; set; }
+        public DbSet<tb_menu_button> tb_menu_buttons { get; set; }
+        public DbSet<tb_tenantRole_Accessbtn> tb_role_Accessbtns { get; set; }
 
         //fluent api
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

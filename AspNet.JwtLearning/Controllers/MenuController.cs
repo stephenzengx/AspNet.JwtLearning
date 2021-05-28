@@ -1,5 +1,6 @@
-﻿using AspNet.JwtLearning.DAL;
+﻿using AspNet.JwtLearning.BLL;
 using AspNet.JwtLearning.Helpers;
+using AspNet.JwtLearning.Models.AdminEntity;
 using AspNet.JwtLearning.Models.Tree;
 using AspNet.JwtLearning.Utility.BaseHelper;
 
@@ -15,15 +16,29 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class MenuController : ApiController
     {
-        public AuthDbContext authDbContext;
+        public AdminBLL adminBLL;
 
         /// <summary>
-        /// 构造方法 注入 DbContext
+        /// 构造方法
         /// </summary>
-        /// <param name="authDbContext"></param>
-        public MenuController(AuthDbContext authDbContext)
+        /// <param name="addminBLL"></param>
+        public MenuController(AdminBLL addminBLL)
         {
-            this.authDbContext = authDbContext;
+            this.adminBLL = addminBLL;
+        }
+
+        public class AdminRoleInfoClass
+        {
+            public string roleId { get; set; }
+            public string roleNanme { get; set; }
+            public string tenantId { get; set; }
+            public string tenantName { get; set; }
+        }
+
+        public HttpResponseMessage AdminRoleInfoList()
+        {
+
+            return new HttpResponseMessage();
         }
 
         /// <summary>
@@ -34,17 +49,15 @@ namespace AspNet.JwtLearning.Controllers
         public HttpResponseMessage AdminMenu()
         {
             List<TreeNode> treeNodeList = new List<TreeNode>();
-            List<Node> allNode  = authDbContext.Database
-                .SqlQuery<Node>("select menuId as NodeId, parentId as ParentId,menuName as Label, sort from tb_system_menu where isEnable=1")
-                .ToList();
+            List<Node> allNode = adminBLL.GetAdminAllMenuNode();
 
             //遍历所有的根节点
-            var rootList = allNode.Where(s => s.ParentId == 0).OrderBy(m=>m.sort).ToList();
+            var rootList = allNode.Where(s => s.ParentId == 0).OrderBy(m=>m.Sort).ToList();
             foreach (var ent in rootList)
             {
                 TreeNode treeNode = new TreeNode();
                 treeNode.NodeId = ent.NodeId;   
-                treeNode.MenuName = ent.Label;
+                treeNode.NodeName = ent.NodeName;
                 //treeNode.ParentId = ent.ParentId;
                 treeNode.Children = Utility.Common.Utils.GetChildrenTree(ent.NodeId, allNode);
                 treeNodeList.Add(treeNode);

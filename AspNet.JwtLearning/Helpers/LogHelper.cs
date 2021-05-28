@@ -1,6 +1,6 @@
 ﻿using log4net;
 
-namespace AspNet.JwtLearning.Utility.Log
+namespace AspNet.JwtLearning.Helpers
 {
     public class LogHelper
     {
