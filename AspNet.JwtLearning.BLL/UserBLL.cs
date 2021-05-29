@@ -15,25 +15,25 @@ namespace AspNet.JwtLearning.BLL
 {
     public class UserBLL
     {
-        public IDAL<tb_tenant_user> userDAL;
+        public IDAL<tb_user> userDAL;
 
-        public UserBLL(IDAL<tb_tenant_user> userDAL)
+        public UserBLL(IDAL<tb_user> userDAL)
         {
             this.userDAL = userDAL;
         }
 
         #region 基础方法
-        public int Count(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public int Count(Expression<Func<tb_user, bool>> wherePredicate)
         {
             return userDAL.Count(wherePredicate);
         }
 
-        public bool Add(tb_tenant_user entity)
+        public bool Add(tb_user entity)
         {
             return userDAL.Add(entity);
         }
 
-        public bool Update(tb_tenant_user entity)
+        public bool Update(tb_user entity)
         {
             return userDAL.Update(entity);
         }
@@ -43,18 +43,18 @@ namespace AspNet.JwtLearning.BLL
             return userDAL.Delete(id);
         }
 
-        public tb_tenant_user FirstOrDefault(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public tb_user FirstOrDefault(Expression<Func<tb_user, bool>> wherePredicate)
         {
             return userDAL.FirstOrDefault(wherePredicate);
         }
 
-        public List<tb_tenant_user> GetList(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public List<tb_user> GetList(Expression<Func<tb_user, bool>> wherePredicate)
         {
             return userDAL.GetList(wherePredicate);
         }
 
 
-        public List<tb_tenant_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_tenant_user, bool>> wherePredicate, Expression<Func<tb_tenant_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
+        public List<tb_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
         {
             return userDAL.GetListByPage(pageIndex, pageSize, wherePredicate, orderPredicate,out totalCount, sortOrder);
         }
@@ -69,21 +69,21 @@ namespace AspNet.JwtLearning.BLL
         {
             if (model == null || string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PassWord))
             {
-                return ResponseHelper.GetErrorResponse("用户名或密码错误");
+                return ResultHelper.GetOkResponse(null,"用户名或密码错误",-1);
             }
 
             var checkUserName = RSAHelper.Decrypt(model.UserName);
             var checkPassWord = RSAHelper.Decrypt(model.PassWord);
 
             //1非对称解密前端. 2-加密密码保存 3下次请求api资源，前端直接通过token 跟redis里面token对比
-            tb_tenant_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName && m.isEnable);
+            tb_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName && m.isEnable);
 
             if (findUser == null)
-                return ResponseHelper.GetErrorResponse("用户名或者密码错误");
+                return ResultHelper.GetOkResponse(null, "用户名或密码错误", -1);
 
             var rightPassWord = RSAHelper.Decrypt(findUser.passWord);
             if (!rightPassWord.Equals(checkPassWord))
-                return ResponseHelper.GetErrorResponse("用户名或者密码错误");
+                return ResultHelper.GetOkResponse(null, "用户名或密码错误", -1);
 
             JwtContainerModel jwtModel = new JwtContainerModel
             {
@@ -91,7 +91,7 @@ namespace AspNet.JwtLearning.BLL
                 TimeStamp = Utils.GetTimeStamp() 
             };
 
-            return ResponseHelper.GetOkResponse(JWTService.GenerateToken(jwtModel));
+            return ResultHelper.GetOkResponse(JWTService.GenerateToken(jwtModel));
         }
 
         /// <summary>
@@ -99,28 +99,23 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseResult Register(tb_tenant_user user)
+        public ResponseResult Register(tb_user user)
         {
             if (user == null || string.IsNullOrEmpty(user.userName) || string.IsNullOrEmpty(user.passWord))
             {
-                return ResponseHelper.GetErrorResponse("请输入用户名和密码");
+                return ResultHelper.GetErrorResponse("请输入用户名和密码");
             }
 
             var realUserName = RSAHelper.Decrypt(user.userName);
             if (userDAL.Any(m => m.userName == realUserName))
-                return ResponseHelper.GetErrorResponse("账户已存在");
+                return ResultHelper.GetErrorResponse("账户已存在");
 
             user.userName = realUserName;
             user.addTime = DateTime.Now;
             if (!userDAL.Add(user))
-                return ResponseHelper.GetErrorResponse("系统异常,请稍后重试");
+                return ResultHelper.GetErrorResponse("系统异常,请稍后重试");
                 
-            return ResponseHelper.GetOkResponse("创建用户成功");
-        }
-
-        public ResponseResult SysMenu()
-        {
-            return new ResponseResult();
+            return ResultHelper.GetOkResponse("创建用户成功");
         }
     }
 }

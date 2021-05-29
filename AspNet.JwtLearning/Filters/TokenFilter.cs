@@ -1,15 +1,15 @@
-﻿using AspNet.JwtLearning.Helpers;
-using AspNet.JwtLearning.Utility;
-using AspNet.JwtLearning.Utility.BaseHelper;
-using AspNet.JwtLearning.Utility.Common;
-using AspNet.JwtLearning.Utility.TokenHandle;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+
+using AspNet.JwtLearning.Helpers;
+using AspNet.JwtLearning.Utility.BaseHelper;
+using AspNet.JwtLearning.Utility.Common;
+using AspNet.JwtLearning.Utility.TokenHandle;
 
 namespace AspNet.JwtLearning.Filters
 {
@@ -65,18 +65,26 @@ namespace AspNet.JwtLearning.Filters
             IEnumerable<string> authHeads = null;
             if (!request.Headers.TryGetValues(ConfigConst.AuthHeaderName, out authHeads))
                 return ResponseFormat.GetResponse( 
-                    ResponseHelper.GetErrorResponse("token expire",-2,HttpStatusCode.Unauthorized)); 
+                    ResultHelper.GetErrorResponse("token expire",-2,HttpStatusCode.Unauthorized)); 
 
             //开始验证token逻辑 
             string token = authHeads.FirstOrDefault();
-            JwtContainerModel jwtContainerModel = JWTService.ValidateToken(token);
-            if (jwtContainerModel == null)
-                return ResponseFormat.GetResponse(
-                    //401认证未通过 403forbidden 未授权  
-                    ResponseHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));  
-                    
+            try
+            {
+                JwtContainerModel jwtContainerModel = JWTService.ValidateToken(token);
+                if (jwtContainerModel == null)
+                    return ResponseFormat.GetResponse(
+                        //401认证未通过 403forbidden 未授权  
+                        ResultHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
 
-            request.Properties.Add("userinfo", jwtContainerModel);
+                request.Properties.Add("userinfo", jwtContainerModel);
+            }
+            catch (System.Exception e)
+            {
+                    return ResponseFormat.GetResponse(
+                        //401认证未通过 403forbidden 未授权  
+                        ResultHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
+            }                   
 
             return await base.SendAsync(request,cancellationToken); ;
         }

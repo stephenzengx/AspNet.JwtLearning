@@ -12,7 +12,7 @@ namespace AspNet.JwtLearning.Controllers
     /// <summary>
     /// 测试api控制器
     /// </summary>
-    public class TenantUserController : ApiController
+    public class UserController : ApiController
     {
         /// <summary>
         /// userBLL
@@ -23,7 +23,7 @@ namespace AspNet.JwtLearning.Controllers
         /// 构造方法 ioc容器注入
         /// </summary>
         /// <param name="userBLL"></param>
-        public TenantUserController(UserBLL userBLL)
+        public UserController(UserBLL userBLL)
         {
             this.userBLL = userBLL;
         }
@@ -40,7 +40,7 @@ namespace AspNet.JwtLearning.Controllers
             int totalCount;
             var list = userBLL.GetListByPage(pageIndex, pageSize,m=>m.userId>0 ,m=>m.userId,out totalCount);
 
-            var ret = ResponseHelper.GetListPageResponse(list,totalCount);
+            var ret = ResultHelper.GetListPageResponse(list,totalCount);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -54,7 +54,7 @@ namespace AspNet.JwtLearning.Controllers
         public HttpResponseMessage GetOne(int userId)
         {
             var ret = userBLL.FirstOrDefault(m => m.userId == userId);
-            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(ret));
+            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(ret));
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Post([FromBody] tb_tenant_user user)
+        public HttpResponseMessage Post([FromBody] tb_user user)
         {
             user.isEnable = true;
             user.passWord = RSAHelper.Encrypt(user.passWord);
 
             bool ret = userBLL.Add(user);
-            var respRet = (ret ? ResponseHelper.SuccessAddResponse(user.userId.ToString()) : ResponseHelper.GetErrorResponse());
+            var respRet = (ret ? ResultHelper.SuccessAddResponse(user.userId.ToString()) : ResultHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }
@@ -80,10 +80,10 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        public HttpResponseMessage Put([FromBody] tb_tenant_user user)
+        public HttpResponseMessage Put([FromBody] tb_user user)
         {
             bool ret = userBLL.Update(user);
-            var respRet = (ret ? ResponseHelper.SuccessUpdateResponse() : ResponseHelper.GetErrorResponse());
+            var respRet = (ret ? ResultHelper.SuccessUpdateResponse() : ResultHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }
@@ -97,7 +97,7 @@ namespace AspNet.JwtLearning.Controllers
         public HttpResponseMessage Delete(int userId)
         {
             bool ret = userBLL.Delete(userId);
-            var respRet = (ret ? ResponseHelper.SuccessDeleteResponse() : ResponseHelper.GetErrorResponse());
+            var respRet = (ret ? ResultHelper.SuccessDeleteResponse() : ResultHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }

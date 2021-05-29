@@ -1,5 +1,5 @@
 using AspNet.JwtLearning.App_Start;
-using AspNet.JwtLearning.Utility.Log;
+using AspNet.JwtLearning.BLL;
 using System.Web.Http;
 
 namespace AspNet.JwtLearning
@@ -11,16 +11,12 @@ namespace AspNet.JwtLearning
             //log4net configuretion
             log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(Server.MapPath("~/Web.config")));
 
-            Init_GlobalInfoCache(); //init cache
+            RedisBLL.InitGlobalInfoCache(); //init cache
 
             AutofacConfig.ConfigureContainer();//init ioc container
 
             GlobalConfiguration.Configure(WebApiConfig.Register);//init HttpConfiguration
 
-        }
-
-        public static void Init_GlobalInfoCache()
-        {
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using AspNet.JwtLearning.DAL;
-using AspNet.JwtLearning.Helpers;
-using AspNet.JwtLearning.Utility.Log;
-using Autofac;
-using Autofac.Integration.WebApi;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Web.Http;
+
+using Autofac;
+using Autofac.Integration.WebApi;
+using AspNet.JwtLearning.DAL;
+using AspNet.JwtLearning.Utility.Log;
 
 namespace AspNet.JwtLearning.App_Start
 {

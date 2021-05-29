@@ -45,12 +45,12 @@
     <Compile Include="AdminEntity\tb_menu_button.cs" />
     <Compile Include="AdminEntity\tb_system_api.cs" />
     <Compile Include="AdminEntity\tb_system_menu.cs" />
-    <Compile Include="AdminEntity\tb_system_roleInfo.cs" />
-    <Compile Include="AdminEntity\tb_tenantRole_accessApi.cs" />
-    <Compile Include="AdminEntity\tb_tenantRole_Accessbtn.cs" />
-    <Compile Include="AdminEntity\tb_tenantRole_accessMenu.cs" />
+    <Compile Include="AdminEntity\tb_roleInfo.cs" />
+    <Compile Include="AdminEntity\tb_role_accessApi.cs" />
+    <Compile Include="AdminEntity\tb_role_accessBtn.cs" />
+    <Compile Include="AdminEntity\tb_role_accessMenu.cs" />
     <Compile Include="AdminEntity\tb_tenant_info.cs" />
-    <Compile Include="AdminEntity\tb_tenant_user.cs" />
+    <Compile Include="AdminEntity\tb_user.cs" />
     <Compile Include="AdminEntity\tb_user_role.cs" />
     <Compile Include="AdminModel\AdminRoleInfoClass.cs" />
     <Compile Include="LoginModel.cs" />

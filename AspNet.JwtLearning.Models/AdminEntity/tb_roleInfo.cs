@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AspNet.JwtLearning.Models.AdminEntity
 {
     /// <summary>
-    /// 系统角色信息表 (每个子系统都有各自单独的角色)
+    /// 租户角色菜单表
     /// </summary>
-    public class tb_system_roleInfo
+    public class tb_roleInfo
     {        
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int roleId { get; set; }

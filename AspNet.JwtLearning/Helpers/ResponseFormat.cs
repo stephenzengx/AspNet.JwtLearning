@@ -26,7 +26,7 @@ namespace AspNet.JwtLearning.Helpers
                 Content = new StringContent(
                 JsonConvert.SerializeObject(new ResponseClass
                 {
-                    Status = 0,
+                    Status = ret.ResponseClass.Status,
                     Message = ret.ResponseClass.Message,
                     Record = ret.ResponseClass.Record,
                     TotalCount = ret.ResponseClass.TotalCount

@@ -15,6 +15,6 @@ namespace AspNet.JwtLearning.Models.AdminEntity
         public string remark { get; set; }
         public DateTime addTime { get; set; }
         public DateTime updateTime { get; set; }
-        public int IsEnable { get; set; }
+        public bool isEnable { get; set; }
     }
 }

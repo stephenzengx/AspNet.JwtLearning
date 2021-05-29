@@ -1,13 +1,9 @@
-﻿using AspNet.JwtLearning.BLL;
-using AspNet.JwtLearning.Helpers;
-using AspNet.JwtLearning.Models.AdminEntity;
-using AspNet.JwtLearning.Models.Tree;
-using AspNet.JwtLearning.Utility.BaseHelper;
-
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Web.Http;
+
+using AspNet.JwtLearning.BLL;
+using AspNet.JwtLearning.Helpers;
+using AspNet.JwtLearning.Utility.BaseHelper;
 
 namespace AspNet.JwtLearning.Controllers
 {
@@ -16,15 +12,57 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class MenuController : ApiController
     {
-        public AdminBLL adminBLL;
+        public MenuBLL menuBLL;
 
         /// <summary>
         /// 构造方法
         /// </summary>
-        /// <param name="addminBLL"></param>
-        public MenuController(AdminBLL addminBLL)
+        /// <param name="menuBLL"></param>
+        public MenuController(MenuBLL menuBLL)
         {
-            this.adminBLL = addminBLL;
+            this.menuBLL = menuBLL;
+        }
+
+        /// <summary>
+        /// （后台）系统菜单树
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage AdminSystemMenuTree()
+        {
+            //?? to do 
+            //在控制器层 为什么加了 using AspNet.JwtLearning.Utility.Common 引用，
+            //没法直接还得这样 Utility.Common.Utils 调用Utils
+
+            //而 AutofacConfig, UserBLL里面 缺可以直接使用LogHelper, Utils
+            var menuTrue= menuBLL.GetSystemMenuTree();
+
+            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
+        }
+
+        /// <summary>
+        /// (后台) 角色菜单 menuId集合
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public HttpResponseMessage AdminRoleMenuIdList(int roleId)
+        {
+            var list = menuBLL.GetAdminRoleMenuIdList(roleId);
+
+            var result = ResultHelper.GetOkResponse(list);
+
+            return ResponseFormat.GetResponse(result);
+        }
+
+        /// <summary>
+        /// 获得用户(菜单)菜单 
+        /// </summary>
+        /// <returns></returns>
+        public HttpResponseMessage UserMenuTree(int userId)
+        {
+            var menuTrue = menuBLL.GetUserMenuTree(userId);
+
+            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
         }
 
         public class AdminRoleInfoClass
@@ -35,45 +73,14 @@ namespace AspNet.JwtLearning.Controllers
             public string tenantName { get; set; }
         }
 
-        public HttpResponseMessage AdminRoleInfoList()
+        /// <summary>
+        /// 某个租户或所有角色列表信息
+        /// </summary>
+        /// <returns></returns>
+        public HttpResponseMessage RoleInfoList(int tenantId)
         {
-
             return new HttpResponseMessage();
         }
 
-        /// <summary>
-        /// 获得系统菜单
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public HttpResponseMessage AdminMenu()
-        {
-            List<TreeNode> treeNodeList = new List<TreeNode>();
-            List<Node> allNode = adminBLL.GetAdminAllMenuNode();
-
-            //遍历所有的根节点
-            var rootList = allNode.Where(s => s.ParentId == 0).OrderBy(m=>m.Sort).ToList();
-            foreach (var ent in rootList)
-            {
-                TreeNode treeNode = new TreeNode();
-                treeNode.NodeId = ent.NodeId;   
-                treeNode.NodeName = ent.NodeName;
-                //treeNode.ParentId = ent.ParentId;
-                treeNode.Children = Utility.Common.Utils.GetChildrenTree(ent.NodeId, allNode);
-                treeNodeList.Add(treeNode);
-            }
-
-            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(treeNodeList));
-        }
-
-        /// <summary>
-        /// 获得角色菜单 (跟RoleId关联)
-        /// </summary>
-        /// <returns></returns>
-        public HttpResponseMessage RoleMenu(int userId)
-        {
-            //通过 userId 在redis里面找到roleId
-            return new HttpResponseMessage();
-        }
     }
 }

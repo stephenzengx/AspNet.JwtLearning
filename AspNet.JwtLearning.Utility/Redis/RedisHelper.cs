@@ -13,9 +13,24 @@ namespace AspNet.JwtLearning.Utility.Redis
     /// </summary>
     public class RedisHelper : IDisposable
     {
+        #region 单例模式
+        public static RedisHelper GetInstance()
+        {
+            return Nested.instance;
+        }
+        // 使用内部类+静态构造函数实现延迟初始化
+        class Nested
+        {
+            static Nested() { }
+            internal static readonly RedisHelper instance = new RedisHelper();
+        }
+        #endregion
+
+
         private int DbNum { get; set; }
+
         /// <summary>
-        /// Redis连接
+        /// Redis连接 多路转化器
         /// </summary>
         private readonly ConnectionMultiplexer _conn;
 

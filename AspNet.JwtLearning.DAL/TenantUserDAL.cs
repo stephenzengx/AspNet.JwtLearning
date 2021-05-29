@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace AspNet.JwtLearning.DAL
 {
-    public class TenantUserDAL : IDAL<tb_tenant_user>
+    public class TenantUserDAL : IDAL<tb_user>
     {
         public AuthDbContext authDbContext;
 
@@ -16,32 +16,32 @@ namespace AspNet.JwtLearning.DAL
             this.authDbContext = authDbContext;
         }
 
-        public tb_tenant_user FirstOrDefault(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public tb_user FirstOrDefault(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_tenant_users.FirstOrDefault(wherePredicate);
+            return authDbContext.tb_users.FirstOrDefault(wherePredicate);
         }
 
-        public bool Any(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public bool Any(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_tenant_users.Any(wherePredicate);
+            return authDbContext.tb_users.Any(wherePredicate);
         }
 
-        public int Count(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public int Count(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_tenant_users.Count(wherePredicate);
+            return authDbContext.tb_users.Count(wherePredicate);
 
             //to do
             if (wherePredicate == null)
-                return authDbContext.tb_tenant_users.Count();           
+                return authDbContext.tb_users.Count();           
         }
 
-        public bool Add(tb_tenant_user entity)
+        public bool Add(tb_user entity)
         {
-            authDbContext.tb_tenant_users.Add(entity);
+            authDbContext.tb_users.Add(entity);
             return authDbContext.SaveChanges() > 0;
         }
 
-        public bool Update(tb_tenant_user entity)
+        public bool Update(tb_user entity)
         {
             var findUser = FirstOrDefault(m=>m.userId == entity.userId);
             if (findUser == null)
@@ -60,7 +60,7 @@ namespace AspNet.JwtLearning.DAL
         {
             //方法1
             var model = FirstOrDefault(m=>m.userId==Id);
-            authDbContext.tb_tenant_users.Remove(model);
+            authDbContext.tb_users.Remove(model);
 
             //方法2
             //var model = new tb_tenant_user { userId = Id };
@@ -70,13 +70,13 @@ namespace AspNet.JwtLearning.DAL
             return authDbContext.SaveChanges() > 0;
         }
 
-        public List<tb_tenant_user> GetList(Expression<Func<tb_tenant_user, bool>> wherePredicate)
+        public List<tb_user> GetList(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_tenant_users.Where(wherePredicate).ToList();
+            return authDbContext.tb_users.Where(wherePredicate).ToList();
         }
 
         //OrderSort排序字段， SortOrder 字段排序顺序
-        public List<tb_tenant_user> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<tb_tenant_user, bool>> wherePredicate, Expression<Func<tb_tenant_user, TOrderFiled>> orderPredicate, out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
+        public List<tb_user> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderFiled>> orderPredicate, out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
         {
             // to do wherePredicate 判空，orderPredicate  判空
 
@@ -85,11 +85,11 @@ namespace AspNet.JwtLearning.DAL
             if (pageSize <= 0)
                 throw new ArgumentOutOfRangeException("pageSize", pageSize, "The pageSize is one-based and should be larger than zero.");
 
-            var query = authDbContext.tb_tenant_users.Where(wherePredicate);
+            var query = authDbContext.tb_users.Where(wherePredicate);
             int skip = (pageIndex - 1) * pageSize;
             int take = pageSize;
 
-            totalCount = authDbContext.tb_tenant_users.Count(wherePredicate);           
+            totalCount = authDbContext.tb_users.Count(wherePredicate);           
 
             if(sortOrder == SortOrder.Ascending)
                 return query.OrderBy(orderPredicate).Skip(skip).Take(take).ToList();

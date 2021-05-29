@@ -117,8 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
-    <Compile Include="Controllers\TenantUserController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\ActionFilter.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="Filters\GlobalExceptionFilter.cs" />

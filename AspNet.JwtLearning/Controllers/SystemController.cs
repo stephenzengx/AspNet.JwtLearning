@@ -41,7 +41,7 @@ namespace AspNet.JwtLearning.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public HttpResponseMessage Register([FromBody] tb_tenant_user user)
+        public HttpResponseMessage Register([FromBody] tb_user user)
         {
             var ret = userBLL.Register(user);
 

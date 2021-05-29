@@ -1,14 +1,19 @@
-﻿using AspNet.JwtLearning.Models.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
+
+using AspNet.JwtLearning.Models.Tree;
 
 namespace AspNet.JwtLearning.Utility.Common
 {
-    public static class Utils
+    public class Utils
     {
+        public static bool IsNullOrEmptyList<T>(List<T> list)
+        {
+            return list == null || list.Count <= 0;
+        }
+
         /// <summary>
         /// 获取当前时间戳 
         /// </summary>
@@ -21,34 +26,31 @@ namespace AspNet.JwtLearning.Utility.Common
             return (bflag ? Convert.ToInt64(ts.TotalSeconds).ToString() : Convert.ToInt64(ts.TotalMilliseconds).ToString());
         }
 
-        /// <summary>  
-        /// DataTable 转换为List 集合(扩展方法)  
-        /// </summary>  
-        /// <param name="dt">DataTable</param>  
-        /// <returns></returns>  
-        public static List<T> ToList<T>(this DataTable dt)
+        /// <summary>
+        /// 通过节点列表 组织成树
+        /// </summary>
+        /// <param name="allNode"></param>
+        /// <returns></returns>
+        public static List<TreeNode> BuildTree(List<Node> allNode)
         {
-            //创建一个属性的列表  
-            List<PropertyInfo> prlist = new List<PropertyInfo>();
-            //获取TResult的类型实例  反射的入口  
-            Type t = typeof(T);
-            //获得TResult 的所有的Public 属性 并找出TResult属性和DataTable的列名称相同的属性(PropertyInfo) 并加入到属性列表   
-            Array.ForEach(t.GetProperties(), p => { if (dt.Columns.IndexOf(p.Name) != -1) prlist.Add(p); });
-            //创建返回的集合  
-            List<T> obList = new List<T>();
+            if (IsNullOrEmptyList(allNode))
+                throw new ArgumentException("empty allNode");
 
-            foreach (DataRow row in dt.Rows)
+            List<TreeNode> treeNodeList = new List<TreeNode>();
+
+            //遍历所有的根节点
+            var rootList = allNode.Where(s => s.ParentId == 0).OrderBy(m => m.Sort).ToList();
+            foreach (var ent in rootList)
             {
-                //创建TResult的实例
-                T ob = Activator.CreateInstance<T>();
-                //T ob = new T();
-                //找到对应的数据  并赋值  
-                prlist.ForEach(p => { if (row[p.Name] != DBNull.Value) p.SetValue(ob, row[p.Name], null); });
-                //放入到返回的集合中.  
-                obList.Add(ob);
+                TreeNode treeNode = new TreeNode();
+                treeNode.NodeId = ent.NodeId;
+                treeNode.NodeName = ent.NodeName;
+                //treeNode.ParentId = ent.ParentId;
+                treeNode.Children = Utility.Common.Utils.GetChildrenTree(ent.NodeId, allNode);
+                treeNodeList.Add(treeNode);
             }
 
-            return obList;
+            return treeNodeList;
         }
 
         /// <summary>
@@ -76,7 +78,6 @@ namespace AspNet.JwtLearning.Utility.Common
 
             return TreeList;
         }
-
 
         /// <summary>
         /// 通过curNodeId 获取自己以及递归下的所有子Node (用于删除功能等)

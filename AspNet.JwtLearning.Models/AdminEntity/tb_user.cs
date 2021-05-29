@@ -7,7 +7,7 @@ namespace AspNet.JwtLearning.Models.AdminEntity
     /// <summary>
     /// 租户账号表 (一个租户下有多个账号)
     /// </summary>
-    public class tb_tenant_user
+    public class tb_user
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int userId { get; set; }

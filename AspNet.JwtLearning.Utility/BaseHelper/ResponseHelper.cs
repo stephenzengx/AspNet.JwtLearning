@@ -16,7 +16,7 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         public int TotalCount { get; set; }
     }
 
-    public static class ResponseHelper
+    public static class ResultHelper
     {
         #region tips
         public static readonly string SUCCESS_ADD = "新增成功";
@@ -30,13 +30,13 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         public static readonly string EXCEPTION_REQUEST = "请求异常,请检查";
         #endregion
 
-        public static ResponseResult GetOkResponse(object obj = null,string message = "操作成功")
+        public static ResponseResult GetOkResponse(object obj = null,string message = "操作成功",int status = 0)
         {
             return new ResponseResult
             {
                 ResponseClass = new ResponseClass
                 {
-                    Status = 0,
+                    Status = status,
                     Message = message,
                     Record = obj
                 },

@@ -104,6 +104,7 @@
     <Compile Include="BaseHelper\AesHelper.cs" />
     <Compile Include="Common\ConfigConst.cs" />
     <Compile Include="BaseHelper\HttpHelper.cs" />
+    <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Utils.cs" />
     <Compile Include="BaseHelper\RSAHelper.cs" />
     <Compile Include="Common\EnumRoleType.cs" />
