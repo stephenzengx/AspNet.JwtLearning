@@ -10,6 +10,7 @@ using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Utility.BaseHelper;
 using AspNet.JwtLearning.Utility.Common;
 using AspNet.JwtLearning.Utility.TokenHandle;
+using Newtonsoft.Json;
 
 namespace AspNet.JwtLearning.Filters
 {
@@ -77,7 +78,7 @@ namespace AspNet.JwtLearning.Filters
                         //401认证未通过 403forbidden 未授权  
                         ResultHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
 
-                request.Properties.Add("userinfo", jwtContainerModel);
+                request.Properties.Add("userinfo", JsonConvert.SerializeObject(jwtContainerModel));
             }
             catch (System.Exception e)
             {

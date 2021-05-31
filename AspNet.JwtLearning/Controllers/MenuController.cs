@@ -4,6 +4,8 @@ using System.Web.Http;
 using AspNet.JwtLearning.BLL;
 using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Utility.BaseHelper;
+using AspNet.JwtLearning.Utility.TokenHandle;
+using Newtonsoft.Json;
 
 namespace AspNet.JwtLearning.Controllers
 {
@@ -35,7 +37,7 @@ namespace AspNet.JwtLearning.Controllers
             //没法直接还得这样 Utility.Common.Utils 调用Utils
 
             //而 AutofacConfig, UserBLL里面 缺可以直接使用LogHelper, Utils
-            var menuTrue= menuBLL.GetSystemMenuTree();
+            var menuTrue= MenuBLL.GetSystemMenuTree();
 
             return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
         }
@@ -45,6 +47,7 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
+        [HttpGet]
         public HttpResponseMessage AdminRoleMenuIdList(int roleId)
         {
             var list = menuBLL.GetAdminRoleMenuIdList(roleId);
@@ -58,29 +61,17 @@ namespace AspNet.JwtLearning.Controllers
         /// 获得用户(菜单)菜单 
         /// </summary>
         /// <returns></returns>
-        public HttpResponseMessage UserMenuTree(int userId)
+        [HttpGet]
+        public HttpResponseMessage UserMenuTree()
         {
-            var menuTrue = menuBLL.GetUserMenuTree(userId);
+
+            var jsonModel = Request.Properties["userinfo"].ToString();
+
+            var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
+
+            var menuTrue = menuBLL.GetUserMenuTree(model.UserId);
 
             return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
         }
-
-        public class AdminRoleInfoClass
-        {
-            public string roleId { get; set; }
-            public string roleNanme { get; set; }
-            public string tenantId { get; set; }
-            public string tenantName { get; set; }
-        }
-
-        /// <summary>
-        /// 某个租户或所有角色列表信息
-        /// </summary>
-        /// <returns></returns>
-        public HttpResponseMessage RoleInfoList(int tenantId)
-        {
-            return new HttpResponseMessage();
-        }
-
     }
 }

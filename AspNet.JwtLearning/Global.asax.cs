@@ -16,7 +16,6 @@ namespace AspNet.JwtLearning
             AutofacConfig.ConfigureContainer();//init ioc container
 
             GlobalConfiguration.Configure(WebApiConfig.Register);//init HttpConfiguration
-
         }
     }
 }
