@@ -1,8 +1,7 @@
-﻿using AspNet.JwtLearning.Utility.LinqExtension;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 
-namespace DataAccess.Helper
+namespace AspNet.JwtLearning.Utility.LinqExtension
 {
     public class Where<T>
     {

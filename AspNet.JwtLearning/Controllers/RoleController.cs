@@ -29,7 +29,7 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="tenantId"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage AdminRoleList(int tenantId)
+        public HttpResponseMessage AdminRoleList(int tenantId=0)
         {
             var list = roleBLL.GetAdminRoleInfoList(tenantId);
            
@@ -41,11 +41,12 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public HttpResponseMessage AdminAuthMenus([FromBody] AdminAuthMenuClass model)
+        [HttpPost]
+        public HttpResponseMessage AdminAuthMenuByIds([FromBody] AdminAuthMenuClass model)
         {
-            var list = string.Empty;
+            var ret = roleBLL.AdminAuthMenuByIds(model);
 
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(list));
+            return ResponseFormat.GetResponse(ret);
         }
 
         /// <summary>

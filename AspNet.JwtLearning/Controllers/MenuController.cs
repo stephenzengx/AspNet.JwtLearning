@@ -14,17 +14,6 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class MenuController : ApiController
     {
-        public MenuBLL menuBLL;
-
-        /// <summary>
-        /// 构造方法
-        /// </summary>
-        /// <param name="menuBLL"></param>
-        public MenuController(MenuBLL menuBLL)
-        {
-            this.menuBLL = menuBLL;
-        }
-
         /// <summary>
         /// （后台）系统菜单树
         /// </summary>
@@ -48,9 +37,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="roleId"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage AdminRoleMenuIdList(int roleId)
+        public HttpResponseMessage AdminRoleAccessMenuIds(int roleId)
         {
-            var list = menuBLL.GetAdminRoleMenuIdList(roleId);
+            var list = MenuBLL.GetRoleAccessMenuIds(roleId);
 
             var result = ResultHelper.GetOkResponse(list);
 
@@ -69,7 +58,7 @@ namespace AspNet.JwtLearning.Controllers
 
             var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
 
-            var menuTrue = menuBLL.GetUserMenuTree(model.UserId);
+            var menuTrue = MenuBLL.GetUserMenuTree(model.UserId);
 
             return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
         }

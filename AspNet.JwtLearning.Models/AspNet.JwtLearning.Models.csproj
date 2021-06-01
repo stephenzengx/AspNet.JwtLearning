@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminAuthMenus.cs" />
     <Compile Include="AdminEntity\tb_menu_button.cs" />
     <Compile Include="AdminEntity\tb_system_api.cs" />
     <Compile Include="AdminEntity\tb_system_menu.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="AdminEntity\tb_tenant_info.cs" />
     <Compile Include="AdminEntity\tb_user.cs" />
     <Compile Include="AdminEntity\tb_user_role.cs" />
-    <Compile Include="AdminModel\AdminRoleInfoClass.cs" />
+    <Compile Include="AdminRoleInfoClass.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tree\TreeNode.cs" />

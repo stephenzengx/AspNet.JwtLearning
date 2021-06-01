@@ -108,15 +108,16 @@ namespace AspNet.JwtLearning.Utility.Common
         /// <param name="curNodeId"></param>
         /// <param name="allNode"></param>
         /// <returns></returns>
-        public static Node GetRootNode(int curNodeId, List<Node> allNode)
+        public static Node GetRootNode(Node node, List<Node> allNode)
         {
-            var node = allNode.FirstOrDefault(m => m.NodeId == curNodeId);
-            if (node == null)
-                throw new DataException("notfound parent node of curNodeId:" + curNodeId);
-            else if (node.ParentId == 0)
+            if (node == null || IsNullOrEmptyList(allNode))
+                throw new ArgumentException("GetRootNode Method args error!");
+
+            var curNode = allNode.FirstOrDefault(m => m.NodeId == node.ParentId);
+            if (curNode == null)
                 return node;
 
-            return GetRootNode(node.NodeId, allNode);
+            return GetRootNode(curNode, allNode);
         }
 
     }

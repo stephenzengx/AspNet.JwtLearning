@@ -7,11 +7,11 @@ using System.Linq.Expressions;
 
 namespace AspNet.JwtLearning.DAL
 {
-    public class TenantUserDAL : IDAL<tb_user>
+    public class UserDAL : IDAL<tb_user>
     {
         public AuthDbContext authDbContext;
 
-        public TenantUserDAL(AuthDbContext authDbContext)
+        public UserDAL(AuthDbContext authDbContext)
         {
             this.authDbContext = authDbContext;
         }
@@ -28,11 +28,7 @@ namespace AspNet.JwtLearning.DAL
 
         public int Count(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_users.Count(wherePredicate);
-
-            //to do
-            if (wherePredicate == null)
-                return authDbContext.tb_users.Count();           
+            return wherePredicate!=null ? authDbContext.tb_users.Count(wherePredicate): authDbContext.tb_users.Count();      
         }
 
         public bool Add(tb_user entity)

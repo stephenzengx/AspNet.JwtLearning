@@ -103,13 +103,32 @@ namespace AspNet.JwtLearning.BLL
         }
 
         /// <summary>
+        /// 系统租户列表
+        /// </summary>
+        /// <returns></returns>
+        public static List<tb_tenant_info> GetTenants()
+        {
+            if (redisHelper.KeyExists(tenants))
+                return redisHelper.StringGet<List<tb_tenant_info>>(tenants);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_tenant_infos.Where(m => m.isEnable).ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(tenants, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        /// <summary>
         /// 系统菜单列表
         /// </summary>
         /// <returns></returns>
         public static List<tb_system_menu> GetSystemMenus()
         {
             if (redisHelper.KeyExists(menus))
-                return redisHelper.StringGet<List<tb_system_menu>>(roleInfos);
+                return redisHelper.StringGet<List<tb_system_menu>>(menus);
 
             using (AuthDbContext authDbContext = new AuthDbContext())
             {
@@ -128,7 +147,7 @@ namespace AspNet.JwtLearning.BLL
         public static List<tb_role_accessMenu> GetRoleMenus()
         {
             if (redisHelper.KeyExists(roleMenus))
-                return redisHelper.StringGet<List<tb_role_accessMenu>>(roleInfos);
+                return redisHelper.StringGet<List<tb_role_accessMenu>>(roleMenus);
 
             using (AuthDbContext authDbContext = new AuthDbContext())
             {
@@ -138,6 +157,14 @@ namespace AspNet.JwtLearning.BLL
 
                 return list;
             }
+        }
+
+        public static void SetRoleMenus(List<tb_role_accessMenu> list)
+        {
+            if (list == null)
+                list = new List<tb_role_accessMenu>();
+
+            redisHelper.StringSet(roleMenus, list, cacheExpireHour);
         }
 
         /// <summary>
@@ -166,7 +193,7 @@ namespace AspNet.JwtLearning.BLL
         public static List<tb_user_role> GetUserRoles()
         {
             if (redisHelper.KeyExists(userRoles))
-                return redisHelper.StringGet<List<tb_user_role>>(roleInfos);
+                return redisHelper.StringGet<List<tb_user_role>>(userRoles);
 
             using (AuthDbContext authDbContext = new AuthDbContext())
             {

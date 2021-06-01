@@ -10,16 +10,11 @@ namespace AspNet.JwtLearning.BLL
 {
     public class MenuBLL
     {
-        public List<tb_roleInfo> GetAdminRoleInfoList()
-        {
-            return RedisBLL.GetRoleInfos();            
-        }
-
         /// <summary>
         /// 获取系统菜单节点列表
         /// </summary>
         /// <returns></returns>
-        public List<Node> GetSystemMenuNodes()
+        public static List<Node> GetSystemMenuNodes()
         {
             var menuList = RedisBLL.GetSystemMenus();
             var nodeList = new List<Node>();
@@ -39,7 +34,7 @@ namespace AspNet.JwtLearning.BLL
         /// 获取系统菜单树
         /// </summary>
         /// <returns></returns>
-        public List<TreeNode> GetSystemMenuTree()
+        public static List<TreeNode> GetSystemMenuTree()
         {
             List<Node> allNode = GetSystemMenuNodes();
 
@@ -49,13 +44,15 @@ namespace AspNet.JwtLearning.BLL
         }
 
         /// <summary>
-        /// 获取用户菜单节点列表
+        /// 获取用户(角色)菜单节点列表
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         public static List<Node> GetUserAccessMenuNodes(int userId)
         {
-            var role = RedisBLL.GetUserRoles().FirstOrDefault(m => m.userId == userId);
+            var UserRoles = RedisBLL.GetUserRoles();
+
+            var role = UserRoles.FirstOrDefault(m => m.userId == userId);
             if (role == null)
                 throw new ArgumentException("userId not found");
 
@@ -85,9 +82,13 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<TreeNode> GetUserMenuTree(int userId)
+        public static List<TreeNode> GetUserMenuTree(int userId)
         {
-            return Utils.BuildTree(GetUserAccessMenuNodes(userId));
+            var nodeList = GetUserAccessMenuNodes(userId);
+            if (Utils.IsNullOrEmptyList(nodeList))
+                return new List<TreeNode>();
+
+            return Utils.BuildTree(nodeList);
         }
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public List<int> GetAdminRoleMenuIdList(int roleId)
+        public static List<int> GetRoleAccessMenuIds(int roleId)
         {
             if (roleId <= 0)
                 throw new ArgumentException("roleId should be larger than zero");
@@ -106,5 +107,7 @@ namespace AspNet.JwtLearning.BLL
 
             return list;
         }
+
+        
     }
 }

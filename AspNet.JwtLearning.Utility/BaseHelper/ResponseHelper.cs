@@ -4,8 +4,8 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
 {
     public class ResponseResult
     {
-        public ResponseClass ResponseClass { get; set; }
-        public HttpStatusCode HttpCode { get; set; } //http状态码
+        public ResponseClass ResponseClass = new ResponseClass();
+        public HttpStatusCode HttpCode = HttpStatusCode.OK;//http状态码 默认值
     }
 
     public class ResponseClass
