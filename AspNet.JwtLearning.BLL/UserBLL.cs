@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Linq.Expressions;
 
 using AspNet.JwtLearning.DAL;
@@ -53,7 +54,6 @@ namespace AspNet.JwtLearning.BLL
             return userDAL.GetList(wherePredicate);
         }
 
-
         public List<tb_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
         {
             return userDAL.GetListByPage(pageIndex, pageSize, wherePredicate, orderPredicate,out totalCount, sortOrder);
@@ -69,7 +69,7 @@ namespace AspNet.JwtLearning.BLL
         {
             if (model == null || string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PassWord))
             {
-                return ResultHelper.GetOkResponse(null,"用户名或密码错误",-1);
+                return ResponseHelper.GetOkResponse(null,"用户名或密码错误",-1);
             }
 
             var checkUserName = RSAHelper.Decrypt(model.UserName);
@@ -79,11 +79,11 @@ namespace AspNet.JwtLearning.BLL
             tb_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName && m.isEnable);
 
             if (findUser == null)
-                return ResultHelper.GetOkResponse(null, "用户名或密码错误", -1);
+                return ResponseHelper.GetOkResponse(null, "用户名或密码错误", -1);
 
             var rightPassWord = RSAHelper.Decrypt(findUser.passWord);
             if (!rightPassWord.Equals(checkPassWord))
-                return ResultHelper.GetOkResponse(null, "用户名或密码错误", -1);
+                return ResponseHelper.GetOkResponse(null, "用户名或密码错误", -1);
 
             JwtContainerModel jwtModel = new JwtContainerModel
             {
@@ -91,7 +91,7 @@ namespace AspNet.JwtLearning.BLL
                 TimeStamp = Utils.GetTimeStamp() 
             };
 
-            return ResultHelper.GetOkResponse(JWTService.GenerateToken(jwtModel));
+            return ResponseHelper.GetOkResponse(JWTService.GenerateToken(jwtModel));
         }
 
         /// <summary>
@@ -103,19 +103,50 @@ namespace AspNet.JwtLearning.BLL
         {
             if (user == null || string.IsNullOrEmpty(user.userName) || string.IsNullOrEmpty(user.passWord))
             {
-                return ResultHelper.GetErrorResponse("请输入用户名和密码");
+                return ResponseHelper.GetErrorResponse("请输入用户名和密码");
             }
 
             var realUserName = RSAHelper.Decrypt(user.userName);
             if (userDAL.Any(m => m.userName == realUserName))
-                return ResultHelper.GetErrorResponse("账户已存在");
+                return ResponseHelper.GetErrorResponse("账户已存在");
 
             user.userName = realUserName;
             user.addTime = DateTime.Now;
             if (!userDAL.Add(user))
-                return ResultHelper.GetErrorResponse("系统异常,请稍后重试");
+                return ResponseHelper.GetErrorResponse("系统异常,请稍后重试");
                 
-            return ResultHelper.GetOkResponse("创建用户成功");
+            return ResponseHelper.GetOkResponse("创建用户成功");
+        }
+
+        /// <summary>
+        /// 用户菜单按钮权限
+        /// </summary>
+        /// <param name="menuId"></param>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public ResponseResult GetMenuBtnRight(int userId,int menuId)
+        {
+            var ret = new List<MenuBtnInfoClass>();
+            var systemBtns = RedisBLL.GetSysMenuButtons();
+            if (systemBtns.Count <= 0)
+                return ResponseHelper.GetOkResponse(ret);
+
+            var roleId = RedisBLL.GetRoleId(userId);
+            var roleBtns = RedisBLL.GetRoleMenuButtons().Where(m => m.roleId == roleId && m.menuId == menuId).ToList();
+            if (roleBtns.Count<=0)
+                return ResponseHelper.GetOkResponse(ret);
+
+            var btnIdList = roleBtns.Select(m => m.btnId).ToList();
+            foreach (var item in systemBtns.Where(m=>btnIdList.Contains(m.btnId)))
+            {
+                ret.Add(new MenuBtnInfoClass { 
+                    btnId = item.btnId,
+                    btnTxt = item.btnTxt,
+                    remark = item.remark
+                });
+            }
+
+            return ResponseHelper.GetOkResponse(ret);
         }
     }
 }

@@ -53,6 +53,7 @@
     <Compile Include="AdminEntity\tb_tenant_info.cs" />
     <Compile Include="AdminEntity\tb_user.cs" />
     <Compile Include="AdminEntity\tb_user_role.cs" />
+    <Compile Include="MenuBtnInfoClass.cs" />
     <Compile Include="AdminRoleInfoClass.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

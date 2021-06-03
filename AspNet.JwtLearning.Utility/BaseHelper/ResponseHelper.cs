@@ -16,7 +16,7 @@ namespace AspNet.JwtLearning.Utility.BaseHelper
         public int TotalCount { get; set; }
     }
 
-    public static class ResultHelper
+    public static class ResponseHelper
     {
         #region tips
         public static readonly string SUCCESS_ADD = "新增成功";

@@ -9,13 +9,13 @@ namespace AspNet.JwtLearning.Models.AdminEntity
     /// </summary>
     public class tb_role_accessBtn
     {
-        //id,tenantRoleId,tenantId,,menuId,btnId,addTime
+        //id,roleId,tenantId,,menuId,btnId,addTime
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public int roleId { get; set; }
         //public int tenantId { get; set; }
-        public string menuId { get; set; }
-        public string btnId { get; set; }
+        public int menuId { get; set; }
+        public int btnId { get; set; }
         public DateTime addTime { get; set; }
     }
 }

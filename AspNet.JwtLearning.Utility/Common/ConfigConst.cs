@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace AspNet.JwtLearning.Utility.Common
@@ -58,5 +59,15 @@ namespace AspNet.JwtLearning.Utility.Common
                 return ConfigurationManager.ConnectionStrings["redisfortest"].ConnectionString;
             }
         }
+
+        /// <summary>
+        /// 无需验证token (后台管理系统)
+        /// </summary>
+        public static List<string> ignoreTokenCheckUrlKey = new List<string> { "Admin" };
+
+        /// <summary>
+        /// 无需验证api权限 (登录,注册,用户菜单树,页面按钮权限)
+        /// </summary>
+        public static List<string> ignoreApiRightCheckUrlKey = new List<string> { "Admin","System" };
     }
 }

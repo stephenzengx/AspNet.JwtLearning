@@ -48,7 +48,7 @@ namespace AspNet.JwtLearning.DAL
         public DbSet<tb_role_accessApi> tb_role_accessApis { get; set; }
 
         public DbSet<tb_menu_button> tb_menu_buttons { get; set; }
-        public DbSet<tb_role_accessBtn> tb_role_Accessbtns { get; set; }
+        public DbSet<tb_role_accessBtn> tb_role_accessBtns { get; set; }
 
         //fluent api
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

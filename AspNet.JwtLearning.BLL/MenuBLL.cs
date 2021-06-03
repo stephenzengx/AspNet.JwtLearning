@@ -16,7 +16,7 @@ namespace AspNet.JwtLearning.BLL
         /// <returns></returns>
         public static List<Node> GetSystemMenuNodes()
         {
-            var menuList = RedisBLL.GetSystemMenus();
+            var menuList = RedisBLL.GetSysMenus();
             var nodeList = new List<Node>();
             foreach (var item in menuList)
             {
@@ -49,19 +49,13 @@ namespace AspNet.JwtLearning.BLL
         /// <param name="userId"></param>
         /// <returns></returns>
         public static List<Node> GetUserAccessMenuNodes(int userId)
-        {
-            var UserRoles = RedisBLL.GetUserRoles();
-
-            var role = UserRoles.FirstOrDefault(m => m.userId == userId);
-            if (role == null)
-                throw new ArgumentException("userId not found");
-
-            List<tb_role_accessMenu> roleMenuList = RedisBLL.GetRoleMenus().Where(m => m.roleId == role.roleId).ToList();
+        {           
+            List<tb_role_accessMenu> roleMenuList = RedisBLL.GetRoleMenus().Where(m => m.roleId == RedisBLL.GetRoleId(userId)).ToList();
             if (Utils.IsNullOrEmptyList(roleMenuList))
                 return new List<Node>();
 
             var menuIdList = roleMenuList.Select(m => m.menuId).ToList();
-            List<tb_system_menu> menusList = RedisBLL.GetSystemMenus().Where(m => menuIdList.Contains(m.menuId)).ToList();
+            List<tb_system_menu> menusList = RedisBLL.GetSysMenus().Where(m => menuIdList.Contains(m.menuId)).ToList();
 
             List<Node> nodeList = new List<Node>();
             foreach (var item in menusList)

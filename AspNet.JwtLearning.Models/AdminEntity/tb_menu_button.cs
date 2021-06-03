@@ -14,7 +14,7 @@ namespace AspNet.JwtLearning.Models.AdminEntity
         public int btnId { get; set; }
         public int menuId { get; set; }
         public string btnTxt { get; set; }//详情,添加,修改,删除,导入,导出 等
-        public int remark { get; set; }      
+        public string remark { get; set; }      
         public DateTime addTime { get; set; }
         public DateTime updateTime { get; set; }
         public bool isEnable { get; set; }

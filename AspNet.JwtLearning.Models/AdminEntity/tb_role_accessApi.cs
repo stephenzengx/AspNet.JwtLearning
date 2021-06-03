@@ -13,7 +13,7 @@ namespace AspNet.JwtLearning.Models.AdminEntity
         public int id { get; set; }
         //public int tenantId { get; set; }
         public int roleId { get; set; }
-        public string apiId { get; set; }
+        public int apiId { get; set; }
         public DateTime addTime { get; set; }
     }
 }

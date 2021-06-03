@@ -13,7 +13,6 @@ namespace AspNet.JwtLearning.BLL
         protected static string tenants = "tenants";
         protected static string roleInfos = "roleInfos";
         protected static string userRoles = "userRoles";
-        protected static string userInfos = "userInfos";
 
         protected static string menus = "menus";
         protected static string roleMenus = "roleMenus";
@@ -81,7 +80,7 @@ namespace AspNet.JwtLearning.BLL
 
                 if (!redisHelper.KeyExists(roleButtons))
                 {
-                    var list = authDbContext.tb_role_accessMenus.ToList();
+                    var list = authDbContext.tb_role_accessBtns.ToList();
                     if (list.Count > 0)
                         redisHelper.StringSet(roleButtons, list, cacheExpireHour);
                 }
@@ -106,7 +105,7 @@ namespace AspNet.JwtLearning.BLL
         /// 系统租户列表
         /// </summary>
         /// <returns></returns>
-        public static List<tb_tenant_info> GetTenants()
+        public static List<tb_tenant_info> GetSysTenants()
         {
             if (redisHelper.KeyExists(tenants))
                 return redisHelper.StringGet<List<tb_tenant_info>>(tenants);
@@ -125,7 +124,7 @@ namespace AspNet.JwtLearning.BLL
         /// 系统菜单列表
         /// </summary>
         /// <returns></returns>
-        public static List<tb_system_menu> GetSystemMenus()
+        public static List<tb_system_menu> GetSysMenus()
         {
             if (redisHelper.KeyExists(menus))
                 return redisHelper.StringGet<List<tb_system_menu>>(menus);
@@ -141,7 +140,66 @@ namespace AspNet.JwtLearning.BLL
         }
 
         /// <summary>
-        /// 角色菜单列表
+        /// 系统角色列表
+        /// </summary>
+        /// <returns></returns>
+        public static List<tb_roleInfo> GetRoleInfos()
+        {
+            if (redisHelper.KeyExists(roleInfos))
+                return redisHelper.StringGet<List<tb_roleInfo>>(roleInfos);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_roleInfos.Where(m => m.isEnable && m.tenantId != 0).ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(roleInfos, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// 系统api列表
+        /// </summary>
+        /// <returns></returns>
+
+        public static List<tb_system_api> GetSysApiInfos()
+        {
+            if (redisHelper.KeyExists(apiInfos))
+                return redisHelper.StringGet<List<tb_system_api>>(apiInfos);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_system_apis.Where(m => m.isEnable).ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(apiInfos, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// 系统菜单按钮列表
+        /// </summary>
+        /// <returns></returns>
+
+        public static List<tb_menu_button> GetSysMenuButtons()
+        {
+            if (redisHelper.KeyExists(buttons))
+                return redisHelper.StringGet<List<tb_menu_button>>(buttons);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_menu_buttons.Where(m => m.isEnable).ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(buttons, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// 角色菜单权限列表
         /// </summary>
         /// <returns></returns>
         public static List<tb_role_accessMenu> GetRoleMenus()
@@ -159,6 +217,10 @@ namespace AspNet.JwtLearning.BLL
             }
         }
 
+        /// <summary>
+        /// 保存角色菜单权限列表
+        /// </summary>
+        /// <param name="list"></param>
         public static void SetRoleMenus(List<tb_role_accessMenu> list)
         {
             if (list == null)
@@ -168,26 +230,31 @@ namespace AspNet.JwtLearning.BLL
         }
 
         /// <summary>
-        /// 角色信息列表
+        /// 保存角色授权Api
         /// </summary>
-        /// <returns></returns>
-        public static List<tb_roleInfo> GetRoleInfos()
+        /// <param name="list"></param>
+        public static void SetRoleApis(List<tb_role_accessApi> list)
         {
-            if (redisHelper.KeyExists(roleInfos))
-                return redisHelper.StringGet<List<tb_roleInfo>>(roleInfos);
+            if (list == null)
+                list = new List<tb_role_accessApi>();
 
-            using (AuthDbContext authDbContext = new AuthDbContext())
-            {
-                var list = authDbContext.tb_roleInfos.Where(m=>m.isEnable && m.tenantId!=0).ToList();
-                if (list.Count > 0)
-                    redisHelper.StringSet(roleInfos, list, cacheExpireHour);
-
-                return list;
-            }
+            redisHelper.StringSet(roleApiInfos, list, cacheExpireHour);
         }
 
         /// <summary>
-        /// 角色信息列表
+        /// 保存角色授权按钮
+        /// </summary>
+        /// <param name="list"></param>
+        public static void SetRoleBtns(List<tb_role_accessBtn> list)
+        {
+            if (list == null)
+                list = new List<tb_role_accessBtn>();
+
+            redisHelper.StringSet(roleMenus, list, cacheExpireHour);
+        }
+
+        /// <summary>
+        /// 用户角色信息列表
         /// </summary>
         /// <returns></returns>
         public static List<tb_user_role> GetUserRoles()
@@ -205,5 +272,53 @@ namespace AspNet.JwtLearning.BLL
             }
         }
 
+        /// <summary>
+        /// 角色api权限列表
+        /// </summary>
+        /// <returns></returns>
+        public static List<tb_role_accessApi> GetRoleApiInfos()
+        {
+            if (redisHelper.KeyExists(roleApiInfos))
+                return redisHelper.StringGet<List<tb_role_accessApi>>(roleApiInfos);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_role_accessApis.ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(roleApiInfos, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// 角色按钮权限列表
+        /// </summary>
+        /// <returns></returns>
+
+        public static List<tb_role_accessBtn> GetRoleMenuButtons()
+        {
+            if (redisHelper.KeyExists(roleButtons))
+                return redisHelper.StringGet<List<tb_role_accessBtn>>(roleButtons);
+
+            using (AuthDbContext authDbContext = new AuthDbContext())
+            {
+                var list = authDbContext.tb_role_accessBtns.ToList();
+                if (list.Count > 0)
+                    redisHelper.StringSet(roleButtons, list, cacheExpireHour);
+
+                return list;
+            }
+        }
+
+        public static int GetRoleId(int userId)
+        {
+            var UserRoles = GetUserRoles();
+            var role = UserRoles.FirstOrDefault(m => m.userId == userId);
+            if (role == null)
+                throw new Exception("userId:"+userId+" need bind role");
+
+            return  role.roleId;
+        }
     }
 }
