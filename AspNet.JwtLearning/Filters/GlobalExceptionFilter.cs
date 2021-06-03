@@ -22,7 +22,7 @@ namespace AspNet.JwtLearning.Filters
             LogHelper.WriteLog((e.InnerException == null ? e.Message : e.InnerException.Message) + e.StackTrace);
 
             actionExecutedContext.Response = ResponseFormat.GetResponse(
-                ResultHelper.GetErrorResponse((e.InnerException==null ? e.Message : e.InnerException.Message),
+                ResponseHelper.GetErrorResponse((e.InnerException==null ? e.Message : e.InnerException.Message),
                 -1,
                 System.Net.HttpStatusCode.InternalServerError)
             );

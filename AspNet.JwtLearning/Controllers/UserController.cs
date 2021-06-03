@@ -40,7 +40,7 @@ namespace AspNet.JwtLearning.Controllers
             int totalCount;
             var list = userBLL.GetListByPage(pageIndex, pageSize,m=>m.userId>0 ,m=>m.userId,out totalCount);
 
-            var ret = ResultHelper.GetListPageResponse(list,totalCount);
+            var ret = ResponseHelper.GetListPageResponse(list,totalCount);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -54,7 +54,7 @@ namespace AspNet.JwtLearning.Controllers
         public HttpResponseMessage GetOne(int userId)
         {
             var ret = userBLL.FirstOrDefault(m => m.userId == userId);
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(ret));
+            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(ret));
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace AspNet.JwtLearning.Controllers
             user.passWord = RSAHelper.Encrypt(user.passWord);
 
             bool ret = userBLL.Add(user);
-            var respRet = (ret ? ResultHelper.SuccessAddResponse(user.userId.ToString()) : ResultHelper.GetErrorResponse());
+            var respRet = (ret ? ResponseHelper.SuccessAddResponse(user.userId.ToString()) : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }
@@ -83,7 +83,7 @@ namespace AspNet.JwtLearning.Controllers
         public HttpResponseMessage Put([FromBody] tb_user user)
         {
             bool ret = userBLL.Update(user);
-            var respRet = (ret ? ResultHelper.SuccessUpdateResponse() : ResultHelper.GetErrorResponse());
+            var respRet = (ret ? ResponseHelper.SuccessUpdateResponse() : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }
@@ -94,10 +94,10 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public HttpResponseMessage Delete(int userId)
+        public HttpResponseMessage AdminDelete(int userId)
         {
             bool ret = userBLL.Delete(userId);
-            var respRet = (ret ? ResultHelper.SuccessDeleteResponse() : ResultHelper.GetErrorResponse());
+            var respRet = (ret ? ResponseHelper.SuccessDeleteResponse() : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
         }

@@ -1,5 +1,12 @@
-﻿using System.Web;
-using System.Web.Http.Controllers;
+﻿using AspNet.JwtLearning.BLL;
+using AspNet.JwtLearning.Helpers;
+using AspNet.JwtLearning.Utility.Common;
+using AspNet.JwtLearning.Utility.Log;
+using AspNet.JwtLearning.Utility.TokenHandle;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Web;
 using System.Web.Http.Filters;
 
 namespace AspNet.JwtLearning.Filters
@@ -7,54 +14,50 @@ namespace AspNet.JwtLearning.Filters
     /// <inheritdoc />
     public class ActionFilter : ActionFilterAttribute
     {
-        public override void OnActionExecuting(HttpActionContext context)
-        {
-            string actionName = context.ActionDescriptor.ActionName;
-            string controllName = context.ActionDescriptor.ControllerDescriptor.ControllerName;
-
-            return;
-            base.OnActionExecuting(context);//to do...     
-        }
-
         /// <summary>
         /// Action过滤器
         /// </summary>
         /// <param name="context"></param>
         public override void OnActionExecuted(HttpActionExecutedContext context)
         {
-            //这里放 docker redis吧 
-            //菜单权限，基础角色表，项目角色表(增加冗余 角色名称字段)
-            //
-
-            return;
-            //var token = context.Response.Headers.GetValues("Authentication");//获取token
-
-            //拦截请求 判断token
-            //context.Response = new HttpResponseMessage {
-            //    Content = new StringContent(
-            //            ("未授权"),
-            //            System.Text.Encoding.GetEncoding("UTF-8"),
-            //            "application/json"),
-            //    StatusCode = HttpStatusCode.Unauthorized
-            //};
-
-            //context.Response.Headers.Add("Content-Type", "application/json;charset=utf-8");
-            //context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-
+            //webapi 获得 controller和actionname  
+            string controllerName = context.ActionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            string actionName = context.ActionContext.ActionDescriptor.ActionName;
             //在传统的MVC中  获得控制器名和方法名
             //string controllerName = (string)filterContext.RouteData.Values["controller"];
             //string actionName = (string)filterContext.RouteData.Values["action"];
-            //string ClientIp = GetClientIp();
 
-            //webapi获得控制器名和方法名     
-            //通过拿到controller和actionname可以进行精确到按钮级别的权限控制 关联用户角色或者具体的用户ID (后台弄一个配置表)      
-            // 可将配置一次性放入iis缓存 或者 redis 更新配置更新数据库 以及(更新对应的缓存)
-            //string controllerName  = context.ActionContext.ControllerContext.ControllerDescriptor.ControllerName;
-            //string actionName = context.ActionContext.ActionDescriptor.ActionName;
-            //AbsolutePath: api/userinfo,  AbsoluteUri:http://localhost:59655/api/userinfo
-            //string portName = context.Request.RequestUri.AbsolutePath;         
+            foreach (var key in ConfigConst.ignoreApiRightCheckUrlKey)
+            {
+                if (controllerName.Contains(key) || actionName.Contains(key))
+                {
+                    base.OnActionExecuted(context);
+                    return;
+                }
+            }
 
-            //base.OnActionExecuted(context); // to do...
+            var jsonModel = context.Request.Properties["userinfo"].ToString();
+            var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
+            if (model == null || model.UserId <= 0)
+                throw new ArgumentException("userinfo format error!");
+
+            var sysApis = RedisBLL.GetSysApiInfos();
+            var selSysApi = sysApis.FirstOrDefault(m => m.controllerName == controllerName && m.actionName == actionName);
+            if (selSysApi == null)
+            {                
+                context.Response = ResponseFormat.GetNotFoundResponseInstance("api isn't configured system apis ");
+                base.OnActionExecuted(context);
+                return;
+            }
+
+            var roleId = RedisBLL.GetUserRoles().FirstOrDefault(m => m.userId == model.UserId)?.roleId;
+            if (roleId <= 0)
+                throw new ArgumentException("userId not bind role");
+
+            if (null == RedisBLL.GetRoleApiInfos().FirstOrDefault(m => m.roleId == roleId && m.apiId == selSysApi.apiId))
+                context.Response = ResponseFormat.GetForbiddenResponseInstance();  
+            
+            base.OnActionExecuted(context);
         }
 
         /// <summary>

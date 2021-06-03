@@ -19,8 +19,6 @@ namespace AspNet.JwtLearning.Filters
     /// </summary>
     public class TokenFilter : DelegatingHandler
     {
-        protected List<string> ignoreTokenUrlKey = new List<string> {"System", "Admin" };
-
         /// <summary>
         /// 重写方法, 拦截请求
         /// </summary>
@@ -57,16 +55,16 @@ namespace AspNet.JwtLearning.Filters
             //(system标头,业务系统)登录,注册,Admin(后台管理系统)- 请求不用验证token 
             //request.RequestUri.AbsolutePath -> api/userinfo
             //request.RequestUri.AbsoluteUri ->  http://localhost:59655/api/userinfo
-            foreach (var key in ignoreTokenUrlKey)
+            foreach (var key in ConfigConst.ignoreTokenCheckUrlKey)
             {
                 if (absPath.Contains(key))
                     return await base.SendAsync(request, cancellationToken);
             }
 
-            IEnumerable<string> authHeads = null;
+            IEnumerable<string> authHeads;
             if (!request.Headers.TryGetValues(ConfigConst.AuthHeaderName, out authHeads))
                 return ResponseFormat.GetResponse( 
-                    ResultHelper.GetErrorResponse("token expire",-2,HttpStatusCode.Unauthorized)); 
+                    ResponseHelper.GetErrorResponse("token expire",-2,HttpStatusCode.Unauthorized)); 
 
             //开始验证token逻辑 
             string token = authHeads.FirstOrDefault();
@@ -76,15 +74,15 @@ namespace AspNet.JwtLearning.Filters
                 if (jwtContainerModel == null)
                     return ResponseFormat.GetResponse(
                         //401认证未通过 403forbidden 未授权  
-                        ResultHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
+                        ResponseHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
 
                 request.Properties.Add("userinfo", JsonConvert.SerializeObject(jwtContainerModel));
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                     return ResponseFormat.GetResponse(
                         //401认证未通过 403forbidden 未授权  
-                        ResultHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
+                        ResponseHelper.GetErrorResponse("token expire", -2, HttpStatusCode.Unauthorized));
             }                   
 
             return await base.SendAsync(request,cancellationToken); ;

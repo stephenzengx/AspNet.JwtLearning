@@ -33,16 +33,16 @@ namespace AspNet.JwtLearning.Controllers
         {
             var list = roleBLL.GetAdminRoleInfoList(tenantId);
            
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(list));
+            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(list));
         }
 
         /// <summary>
-        /// 角色绑定菜单 
+        /// 角色授权菜单 
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage AdminAuthMenuByIds([FromBody] AdminAuthMenuClass model)
+        public HttpResponseMessage AdminAuthMenuByIds([FromBody] AdminAuthClass model)
         {
             var ret = roleBLL.AdminAuthMenuByIds(model);
 
@@ -50,27 +50,27 @@ namespace AspNet.JwtLearning.Controllers
         }
 
         /// <summary>
-        /// 角色绑定api to do
+        /// 角色授权api 
         /// </summary>
-        /// <param name="roleId"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public HttpResponseMessage AdminAuthApis(int roleId)
+        public HttpResponseMessage AdminAuthApis([FromBody] AdminAuthClass model)
         {
-            var list = string.Empty;
+            var ret = roleBLL.AdminAuthApiByIds(model);
 
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(list));
+            return ResponseFormat.GetResponse(ret);
         }
 
         /// <summary>
-        /// 角色绑定按钮
+        /// 角色授权按钮
         /// </summary>
-        /// <param name="roleId"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public HttpResponseMessage AdminAuthBtns(int roleId)
+        public HttpResponseMessage AdminAuthBtns([FromBody] AdminAuthClass model)
         {
-            var list = string.Empty;
+            var ret = roleBLL.AdminAuthBtnByIds(model);
 
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(list));
+            return ResponseFormat.GetResponse(ret);
         }
     }
 }

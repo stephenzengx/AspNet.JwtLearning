@@ -4,8 +4,6 @@ using System.Web.Http;
 using AspNet.JwtLearning.BLL;
 using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Utility.BaseHelper;
-using AspNet.JwtLearning.Utility.TokenHandle;
-using Newtonsoft.Json;
 
 namespace AspNet.JwtLearning.Controllers
 {
@@ -28,7 +26,7 @@ namespace AspNet.JwtLearning.Controllers
             //而 AutofacConfig, UserBLL里面 缺可以直接使用LogHelper, Utils
             var menuTrue= MenuBLL.GetSystemMenuTree();
 
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
+            return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(menuTrue));
         }
 
         /// <summary>
@@ -41,26 +39,9 @@ namespace AspNet.JwtLearning.Controllers
         {
             var list = MenuBLL.GetRoleAccessMenuIds(roleId);
 
-            var result = ResultHelper.GetOkResponse(list);
+            var result = ResponseHelper.GetOkResponse(list);
 
             return ResponseFormat.GetResponse(result);
-        }
-
-        /// <summary>
-        /// 获得用户(菜单)菜单 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public HttpResponseMessage UserMenuTree()
-        {
-
-            var jsonModel = Request.Properties["userinfo"].ToString();
-
-            var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
-
-            var menuTrue = MenuBLL.GetUserMenuTree(model.UserId);
-
-            return ResponseFormat.GetResponse(ResultHelper.GetOkResponse(menuTrue));
         }
     }
 }
