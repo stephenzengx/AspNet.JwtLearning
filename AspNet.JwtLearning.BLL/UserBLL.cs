@@ -54,9 +54,9 @@ namespace AspNet.JwtLearning.BLL
             return await userDAL.GetListAsync(wherePredicate);
         }
 
-        public List<tb_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
+        public async Task<Tuple<int, IEnumerable<tb_user>>> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderField>> orderPredicate, SortOrder sortOrder = SortOrder.Ascending)
         {
-            return userDAL.GetListByPage(pageIndex, pageSize, wherePredicate, orderPredicate,out totalCount, sortOrder);
+            return await userDAL.GetListByPage(pageIndex, pageSize, wherePredicate, orderPredicate,sortOrder);
         }
         #endregion
 

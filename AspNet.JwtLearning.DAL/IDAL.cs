@@ -21,9 +21,8 @@ namespace AspNet.JwtLearning.DAL
 
         Task<bool> DeleteAsync(int Id);
 
-        Task<List<T>> GetListAsync(Expression<Func<T, bool>> wherePredicate);
+        Task<List<T>> GetListAsync(Expression<Func<T, bool>> wherePredicate);      
 
-        //默认升序
-        List<T> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<T, bool>> wherePredicate, Expression<Func<T, TOrderFiled>> orderExpression, out int totalCount, SortOrder sortOrder);
+        Task<Tuple<int, IEnumerable<T>>> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<T, bool>> wherePredicate, Expression<Func<T, TOrderFiled>> orderExpression, SortOrder sortOrder);
     }
 }

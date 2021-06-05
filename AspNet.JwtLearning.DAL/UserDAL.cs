@@ -73,8 +73,18 @@ namespace AspNet.JwtLearning.DAL
             return await authDbContext.tb_users.Where(wherePredicate).ToListAsync();
         }
 
-        //OrderSort排序字段， SortOrder 字段排序顺序
-        public List<tb_user> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderFiled>> orderPredicate, out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <typeparam name="TOrderFiled"></typeparam>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="wherePredicate"></param>
+        /// <param name="orderPredicate"></param>
+        /// <param name="totalCount"></param>
+        /// <param name="sortOrder"></param>
+        /// <returns></returns>
+        public async Task<Tuple<int, IEnumerable<tb_user>>> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderFiled>> orderPredicate, SortOrder sortOrder = SortOrder.Ascending)
         {
             if (pageIndex <= 0)
                 throw new ArgumentOutOfRangeException("pageIndex", pageIndex, "The pageIndex is one-based and should be larger than zero.");
@@ -85,11 +95,11 @@ namespace AspNet.JwtLearning.DAL
             int skip = (pageIndex - 1) * pageSize;
             int take = pageSize;
 
-            totalCount = query.Count(wherePredicate);
+            var totalCount = await query.CountAsync(wherePredicate);
             //totalCount = authDbContext.tb_users.Count(wherePredicate);
 
             query = (sortOrder == SortOrder.Ascending) ? query.OrderBy(orderPredicate) : query.OrderByDescending(orderPredicate);
-            return query.Skip(skip).Take(take).ToList();
+            return new Tuple<int, IEnumerable<tb_user>>(totalCount, await query.Skip(skip).Take(take).ToListAsync());
             //return (sortOrder == SortOrder.Ascending) ? query.OrderBy(orderPredicate).Skip(skip).Take(take).ToList() : query.OrderByDescending(orderPredicate).Skip(skip).Take(take).ToList();
         }
     }

@@ -36,14 +36,13 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage ListByPage(int pageIndex, int pageSize)
+        public async Task<HttpResponseMessage> ListByPage(int pageIndex, int pageSize)
         {
-            int totalCount;
-            var list = userBLL.GetListByPage(pageIndex, pageSize,m=>m.userId>0 ,m=>m.userId,out totalCount);
+            var retTuple = await userBLL.GetListByPage(pageIndex, pageSize,m=>m.userId>0 ,m=>m.userId);
 
-            var ret = ResponseHelper.GetListPageResponse(list,totalCount);
+            var response = ResponseHelper.GetListPageResponse(retTuple.Item2, retTuple.Item1);
 
-            return ResponseFormat.GetResponse(ret);
+            return ResponseFormat.GetResponse(response);
         }
 
         /// <summary>
