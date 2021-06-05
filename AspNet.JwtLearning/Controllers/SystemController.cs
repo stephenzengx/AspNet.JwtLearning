@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 using AspNet.JwtLearning.BLL;
@@ -17,7 +18,7 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class SystemController : ApiController
     {
-        public UserBLL userBLL;
+        private readonly UserBLL userBLL;
 
         public SystemController(UserBLL userBLL)
         {
@@ -30,9 +31,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Login([FromBody] LoginModel user)
+        public async Task<HttpResponseMessage> Login([FromBody] LoginModel user)
         {
-            var ret = userBLL.Login(user);
+            var ret = await userBLL.Login(user);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -43,9 +44,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Register([FromBody] tb_user user)
+        public async Task<HttpResponseMessage> Register([FromBody] tb_user user)
         {
-            var ret = userBLL.Register(user);
+            var ret = await userBLL.Register(user);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -55,13 +56,13 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage UserMenuTree()
+        public async Task<HttpResponseMessage> UserMenuTree()
         {
 
             var jsonModel = Request.Properties["userinfo"].ToString();
             var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
 
-            var menuTrue = MenuBLL.GetUserMenuTree(model.UserId);
+            var menuTrue = await MenuBLL.GetUserMenuTree(model.UserId);
 
             return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(menuTrue));
         }
@@ -71,12 +72,12 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage UserMenuBtnRight(int menuId)
+        public async Task<HttpResponseMessage> UserMenuBtnRight(int menuId)
         {
             var jsonModel = Request.Properties["userinfo"].ToString();
             var model = JsonConvert.DeserializeObject<JwtContainerModel>(jsonModel);
             
-            var ret = userBLL.GetMenuBtnRight(model.UserId, menuId);        
+            var ret = await userBLL.GetMenuBtnRight(model.UserId, menuId);        
 
             return ResponseFormat.GetResponse(ret);
         }

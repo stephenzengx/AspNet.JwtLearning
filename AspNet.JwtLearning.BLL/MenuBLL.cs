@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using AspNet.JwtLearning.Models.AdminEntity;
 using AspNet.JwtLearning.Models.Tree;
 using AspNet.JwtLearning.Utility.Common;
@@ -14,9 +14,9 @@ namespace AspNet.JwtLearning.BLL
         /// 获取系统菜单节点列表
         /// </summary>
         /// <returns></returns>
-        public static List<Node> GetSystemMenuNodes()
+        public async static Task<List<Node>> GetSystemMenuNodes()
         {
-            var menuList = RedisBLL.GetSysMenus();
+            var menuList = await RedisBLL.GetSysMenus();
             var nodeList = new List<Node>();
             foreach (var item in menuList)
             {
@@ -34,9 +34,9 @@ namespace AspNet.JwtLearning.BLL
         /// 获取系统菜单树
         /// </summary>
         /// <returns></returns>
-        public static List<TreeNode> GetSystemMenuTree()
+        public async static Task<List<TreeNode>> GetSystemMenuTree()
         {
-            List<Node> allNode = GetSystemMenuNodes();
+            List<Node> allNode = await GetSystemMenuNodes();
 
             var treeNodeList = Utils.BuildTree(allNode);
 
@@ -48,14 +48,16 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public static List<Node> GetUserAccessMenuNodes(int userId)
-        {           
-            List<tb_role_accessMenu> roleMenuList = RedisBLL.GetRoleMenus().Where(m => m.roleId == RedisBLL.GetRoleId(userId)).ToList();
+        public async static Task<List<Node>> GetUserAccessMenuNodes(int userId)
+        {
+            var roleId = await RedisBLL.GetRoleId(userId);
+            List<tb_role_accessMenu> roleMenuList = (await RedisBLL.GetRoleMenus()).Where(m => m.roleId == roleId).ToList();
+            
             if (Utils.IsNullOrEmptyList(roleMenuList))
                 return new List<Node>();
 
             var menuIdList = roleMenuList.Select(m => m.menuId).ToList();
-            List<tb_system_menu> menusList = RedisBLL.GetSysMenus().Where(m => menuIdList.Contains(m.menuId)).ToList();
+            List<tb_system_menu> menusList = (await RedisBLL.GetSysMenus()).Where(m => menuIdList.Contains(m.menuId)).ToList();
 
             List<Node> nodeList = new List<Node>();
             foreach (var item in menusList)
@@ -76,9 +78,9 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public static List<TreeNode> GetUserMenuTree(int userId)
+        public async static Task<List<TreeNode>> GetUserMenuTree(int userId)
         {
-            var nodeList = GetUserAccessMenuNodes(userId);
+            var nodeList = await GetUserAccessMenuNodes(userId);
             if (Utils.IsNullOrEmptyList(nodeList))
                 return new List<TreeNode>();
 
@@ -90,12 +92,12 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public static List<int> GetRoleAccessMenuIds(int roleId)
+        public async static Task<List<int>> GetRoleAccessMenuIds(int roleId)
         {
             if (roleId <= 0)
                 throw new ArgumentException("roleId should be larger than zero");
 
-            var list = RedisBLL.GetRoleMenus()
+            var list = (await RedisBLL.GetRoleMenus())
                             .Where(m => m.roleId == roleId && m.isSelect)
                             .Select(m => m.menuId).ToList();
 

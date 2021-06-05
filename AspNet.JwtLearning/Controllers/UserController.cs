@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 using AspNet.JwtLearning.BLL;
@@ -17,7 +18,7 @@ namespace AspNet.JwtLearning.Controllers
         /// <summary>
         /// userBLL
         /// </summary>
-        public UserBLL userBLL;
+        private readonly UserBLL userBLL;
 
         /// <summary>
         /// 构造方法 ioc容器注入
@@ -51,9 +52,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage GetOne(int userId)
+        public async Task<HttpResponseMessage> GetOne(int userId)
         {
-            var ret = userBLL.FirstOrDefault(m => m.userId == userId);
+            var ret = await userBLL.FirstOrDefaultAsync(m => m.userId == userId);
             return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(ret));
         }
 
@@ -63,12 +64,12 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage Post([FromBody] tb_user user)
+        public async Task<HttpResponseMessage> Post([FromBody] tb_user user)
         {
             user.isEnable = true;
             user.passWord = RSAHelper.Encrypt(user.passWord);
 
-            bool ret = userBLL.Add(user);
+            bool ret = await userBLL.AddAsync(user);
             var respRet = (ret ? ResponseHelper.SuccessAddResponse(user.userId.ToString()) : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
@@ -80,9 +81,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        public HttpResponseMessage Put([FromBody] tb_user user)
+        public async Task<HttpResponseMessage> Put([FromBody] tb_user user)
         {
-            bool ret = userBLL.Update(user);
+            bool ret = await userBLL.UpdateAsync(user);
             var respRet = (ret ? ResponseHelper.SuccessUpdateResponse() : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);
@@ -94,9 +95,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public HttpResponseMessage AdminDelete(int userId)
+        public async Task<HttpResponseMessage> AdminDelete(int userId)
         {
-            bool ret = userBLL.Delete(userId);
+            bool ret = await userBLL.DeleteAsync(userId);
             var respRet = (ret ? ResponseHelper.SuccessDeleteResponse() : ResponseHelper.GetErrorResponse());
 
             return ResponseFormat.GetResponse(respRet);

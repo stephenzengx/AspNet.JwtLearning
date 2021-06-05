@@ -1,45 +1,47 @@
 ﻿using AspNet.JwtLearning.Models.AdminEntity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace AspNet.JwtLearning.DAL
 {
     public class UserDAL : IDAL<tb_user>
     {
-        public AuthDbContext authDbContext;
+        private readonly AuthDbContext authDbContext;
 
         public UserDAL(AuthDbContext authDbContext)
         {
             this.authDbContext = authDbContext;
         }
 
-        public tb_user FirstOrDefault(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<tb_user> FirstOrDefaultAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_users.FirstOrDefault(wherePredicate);
+            return await authDbContext.tb_users.FirstOrDefaultAsync(wherePredicate);
         }
 
-        public bool Any(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<bool> AnyAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_users.Any(wherePredicate);
+            return await authDbContext.tb_users.AnyAsync(wherePredicate);
         }
 
-        public int Count(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<int> CountAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return wherePredicate!=null ? authDbContext.tb_users.Count(wherePredicate): authDbContext.tb_users.Count();      
+            return wherePredicate!=null ? await authDbContext.tb_users.CountAsync(wherePredicate):await authDbContext.tb_users.CountAsync();      
         }
 
-        public bool Add(tb_user entity)
+        public async Task<bool> AddAsync(tb_user entity)
         {
             authDbContext.tb_users.Add(entity);
-            return authDbContext.SaveChanges() > 0;
+            return await authDbContext.SaveChangesAsync() > 0;
         }
 
-        public bool Update(tb_user entity)
+        public async Task<bool> UpdateAsync(tb_user entity)
         {
-            var findUser = FirstOrDefault(m=>m.userId == entity.userId);
+            var findUser = await FirstOrDefaultAsync(m=>m.userId == entity.userId);
             if (findUser == null)
                 throw new KeyNotFoundException("userId not found");
             //authDbContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
@@ -49,13 +51,13 @@ namespace AspNet.JwtLearning.DAL
             findUser.email = entity.email;
             findUser.userName = entity.userName;
 
-            return authDbContext.SaveChanges() > 0;
+            return await authDbContext.SaveChangesAsync() > 0;
         }
 
-        public bool Delete(int Id)
+        public async Task<bool> DeleteAsync(int Id)
         {
             //方法1
-            var model = FirstOrDefault(m=>m.userId==Id);
+            var model = await FirstOrDefaultAsync(m=>m.userId==Id);
             authDbContext.tb_users.Remove(model);
 
             //方法2
@@ -63,19 +65,17 @@ namespace AspNet.JwtLearning.DAL
             //authDbContext.tb_tenant_users.Attach(model);
             //authDbContext.tb_tenant_users.Remove(model);
             
-            return authDbContext.SaveChanges() > 0;
+            return await authDbContext.SaveChangesAsync() > 0;
         }
 
-        public List<tb_user> GetList(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<List<tb_user>> GetListAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return authDbContext.tb_users.Where(wherePredicate).ToList();
+            return await authDbContext.tb_users.Where(wherePredicate).ToListAsync();
         }
 
         //OrderSort排序字段， SortOrder 字段排序顺序
         public List<tb_user> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderFiled>> orderPredicate, out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
         {
-            // to do wherePredicate 判空，orderPredicate  判空
-
             if (pageIndex <= 0)
                 throw new ArgumentOutOfRangeException("pageIndex", pageIndex, "The pageIndex is one-based and should be larger than zero.");
             if (pageSize <= 0)
@@ -85,17 +85,12 @@ namespace AspNet.JwtLearning.DAL
             int skip = (pageIndex - 1) * pageSize;
             int take = pageSize;
 
-            totalCount = authDbContext.tb_users.Count(wherePredicate);           
+            totalCount = query.Count(wherePredicate);
+            //totalCount = authDbContext.tb_users.Count(wherePredicate);
 
-            if(sortOrder == SortOrder.Ascending)
-                return query.OrderBy(orderPredicate).Skip(skip).Take(take).ToList();
-
-            //return authDbContext.tb_tenant_users.Where(wherePredicate)
-            //            .OrderBy(orderPredicate)
-            //            .Skip((pageIndex - 1) * pageSize).Take(pageSize)
-            //            .ToList();
-
-            return query.OrderByDescending(orderPredicate).Skip(skip).Take(take).ToList();
+            query = (sortOrder == SortOrder.Ascending) ? query.OrderBy(orderPredicate) : query.OrderByDescending(orderPredicate);
+            return query.Skip(skip).Take(take).ToList();
+            //return (sortOrder == SortOrder.Ascending) ? query.OrderBy(orderPredicate).Skip(skip).Take(take).ToList() : query.OrderByDescending(orderPredicate).Skip(skip).Take(take).ToList();
         }
     }
 }

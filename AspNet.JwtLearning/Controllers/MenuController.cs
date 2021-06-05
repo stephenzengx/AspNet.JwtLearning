@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 using AspNet.JwtLearning.BLL;
@@ -17,14 +18,14 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage AdminSystemMenuTree()
+        public async Task<HttpResponseMessage> AdminSystemMenuTree()
         {
             //?? to do 
             //在控制器层 为什么加了 using AspNet.JwtLearning.Utility.Common 引用，
             //没法直接还得这样 Utility.Common.Utils 调用Utils
 
             //而 AutofacConfig, UserBLL里面 缺可以直接使用LogHelper, Utils
-            var menuTrue= MenuBLL.GetSystemMenuTree();
+            var menuTrue= await MenuBLL.GetSystemMenuTree();
 
             return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(menuTrue));
         }
@@ -35,9 +36,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="roleId"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage AdminRoleAccessMenuIds(int roleId)
+        public async Task<HttpResponseMessage> AdminRoleAccessMenuIds(int roleId)
         {
-            var list = MenuBLL.GetRoleAccessMenuIds(roleId);
+            var list = await MenuBLL.GetRoleAccessMenuIds(roleId);
 
             var result = ResponseHelper.GetOkResponse(list);
 

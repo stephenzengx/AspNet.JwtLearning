@@ -5,13 +5,15 @@ using AspNet.JwtLearning.Utility.BaseHelper;
 using AspNet.JwtLearning.Utility.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AspNet.JwtLearning.BLL
 {
     public class RoleBLL
     {
-        public AuthDbContext authDbContext;
+        private readonly AuthDbContext authDbContext;
 
         public RoleBLL(AuthDbContext authDbContext)
         {
@@ -23,12 +25,13 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public List<AdminRoleInfoClass> GetAdminRoleInfoList(int tenantId)
+        public async Task<List<AdminRoleInfoClass>> GetAdminRoleInfoList(int tenantId)
         {
             var ret = new List<AdminRoleInfoClass>();
+            
+            var roles = (await RedisBLL.GetRoleInfos()).Where(m=>m.tenantId!=0).ToList();
 
-            var roles = RedisBLL.GetRoleInfos().Where(m=>m.tenantId!=0).ToList();
-            var tenants = RedisBLL.GetSysTenants();
+            var tenants = await RedisBLL.GetSysTenants();
             if (Utils.IsNullOrEmptyList(roles))
                 return ret;
             if (tenantId > 0)
@@ -53,16 +56,16 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseResult AdminAuthMenuByIds(AdminAuthClass model)
+        public async Task<ResponseResult> AdminAuthMenuByIds(AdminAuthClass model)
         {
             if (model == null || Utils.IsNullOrEmptyList(model.selectIds))
                 throw new ArgumentException("AdminAuthMenuClass data error!");
 
-            var delList = authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToList();
-            if (delList.Count>0 && authDbContext.Database.ExecuteSqlCommand($"delete from tb_role_accessMenu where roleId = {model.roleId}")<=0)
+            var delList = await authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToListAsync();
+            if (delList.Count>0 && (await authDbContext.Database.ExecuteSqlCommandAsync($"delete from tb_role_accessMenu where roleId = {model.roleId}"))<=0)
                 throw new Exception("database exec error");
 
-            var sysMenuNodes = MenuBLL.GetSystemMenuNodes();
+            var sysMenuNodes = await MenuBLL.GetSystemMenuNodes();
             if (Utils.IsNullOrEmptyList(sysMenuNodes))
                 return new ResponseResult();
 
@@ -102,10 +105,10 @@ namespace AspNet.JwtLearning.BLL
             }
 
             authDbContext.tb_role_accessMenus.AddRange(insertRoleMenus);
-            if (authDbContext.SaveChanges() <= 0)
+            if (await authDbContext.SaveChangesAsync() <= 0)
                 return ResponseHelper.GetOkResponse(null,"授权失败，重试", -1);
 
-            RedisBLL.SetRoleMenus(authDbContext.tb_role_accessMenus.ToList());
+            RedisBLL.SetCacheRoleMenus(await authDbContext.tb_role_accessMenus.ToListAsync());
             return ResponseHelper.GetOkResponse(null, "授权成功", 0);
         }
 
@@ -114,13 +117,13 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseResult AdminAuthApiByIds(AdminAuthClass model)
+        public async Task<ResponseResult> AdminAuthApiByIds(AdminAuthClass model)
         {
             if (model == null || Utils.IsNullOrEmptyList(model.selectIds))
                 throw new ArgumentException("AdminAuthMenuClass data error!");
 
-            var delList = authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToList();
-            if (delList.Count > 0 && authDbContext.Database.ExecuteSqlCommand($"delete from tb_role_accessApi where roleId = {model.roleId}") <= 0)
+            var delList = await authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToListAsync();
+            if (delList.Count > 0 && (await authDbContext.Database.ExecuteSqlCommandAsync($"delete from tb_role_accessApi where roleId = {model.roleId}")) <= 0)
                 throw new Exception("database exec error");
 
             List<tb_role_accessApi> insertRoleApis = new List<tb_role_accessApi>();
@@ -133,10 +136,10 @@ namespace AspNet.JwtLearning.BLL
             }
 
             authDbContext.tb_role_accessApis.AddRange(insertRoleApis);
-            if (authDbContext.SaveChanges() <= 0)
+            if ( await authDbContext.SaveChangesAsync() <= 0)
                 return ResponseHelper.GetOkResponse(null, "授权失败，重试", -1);
 
-            RedisBLL.SetRoleApis(authDbContext.tb_role_accessApis.ToList());
+            RedisBLL.SetCacheRoleApis(await authDbContext.tb_role_accessApis.ToListAsync());
             return ResponseHelper.GetOkResponse(null, "授权成功", 0);
             
         }
@@ -146,13 +149,13 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseResult AdminAuthBtnByIds(AdminAuthClass model)
+        public async Task<ResponseResult> AdminAuthBtnByIds(AdminAuthClass model)
         {
             if (model == null || Utils.IsNullOrEmptyList(model.selectIds))
                 throw new ArgumentException("AdminAuthMenuClass data error!");
 
-            var delList = authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToList();
-            if (delList.Count > 0 && authDbContext.Database.ExecuteSqlCommand($"delete from tb_role_accessBtn where roleId = {model.roleId}") <= 0)
+            var delList = await authDbContext.tb_role_accessMenus.Where(m => m.roleId == model.roleId).ToListAsync();
+            if (delList.Count > 0 && (await authDbContext.Database.ExecuteSqlCommandAsync($"delete from tb_role_accessBtn where roleId = {model.roleId}")) <= 0)
                 throw new Exception("database exec error");
 
 
@@ -168,10 +171,10 @@ namespace AspNet.JwtLearning.BLL
             }
 
             authDbContext.tb_role_accessBtns.AddRange(insertRoleBtns);
-            if (authDbContext.SaveChanges() <= 0)
+            if (await authDbContext.SaveChangesAsync() <= 0)
                 return ResponseHelper.GetOkResponse(null, "授权失败，重试", -1);
 
-            RedisBLL.SetRoleBtns(authDbContext.tb_role_accessBtns.ToList());
+            RedisBLL.SetCacheRoleBtns(await authDbContext.tb_role_accessBtns.ToListAsync());
             return ResponseHelper.GetOkResponse(null, "授权成功", 0);           
         }
     }

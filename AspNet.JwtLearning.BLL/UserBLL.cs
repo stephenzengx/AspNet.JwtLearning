@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-
+using System.Threading.Tasks;
 using AspNet.JwtLearning.DAL;
 using AspNet.JwtLearning.Models;
 using AspNet.JwtLearning.Models.AdminEntity;
@@ -16,7 +16,7 @@ namespace AspNet.JwtLearning.BLL
 {
     public class UserBLL
     {
-        public IDAL<tb_user> userDAL;
+        private readonly IDAL<tb_user> userDAL;
 
         public UserBLL(IDAL<tb_user> userDAL)
         {
@@ -24,34 +24,34 @@ namespace AspNet.JwtLearning.BLL
         }
 
         #region 基础方法
-        public int Count(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<int> CountAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return userDAL.Count(wherePredicate);
+            return await userDAL.CountAsync(wherePredicate);
         }
 
-        public bool Add(tb_user entity)
+        public async Task<bool> AddAsync(tb_user entity)
         {
-            return userDAL.Add(entity);
+            return await userDAL.AddAsync(entity);
         }
 
-        public bool Update(tb_user entity)
+        public async Task<bool> UpdateAsync(tb_user entity)
         {
-            return userDAL.Update(entity);
+            return await userDAL.UpdateAsync(entity);
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            return userDAL.Delete(id);
+            return await userDAL.DeleteAsync(id);
         }
 
-        public tb_user FirstOrDefault(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<tb_user> FirstOrDefaultAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return userDAL.FirstOrDefault(wherePredicate);
+            return await userDAL.FirstOrDefaultAsync(wherePredicate);
         }
 
-        public List<tb_user> GetList(Expression<Func<tb_user, bool>> wherePredicate)
+        public async Task<List<tb_user>> GetListAsync(Expression<Func<tb_user, bool>> wherePredicate)
         {
-            return userDAL.GetList(wherePredicate);
+            return await userDAL.GetListAsync(wherePredicate);
         }
 
         public List<tb_user> GetListByPage<TOrderField>(int pageIndex, int pageSize, Expression<Func<tb_user, bool>> wherePredicate, Expression<Func<tb_user, TOrderField>> orderPredicate,out int totalCount, SortOrder sortOrder = SortOrder.Ascending)
@@ -65,7 +65,7 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseResult Login(LoginModel model)
+        public async Task<ResponseResult> Login(LoginModel model)
         {
             if (model == null || string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PassWord))
             {
@@ -76,7 +76,7 @@ namespace AspNet.JwtLearning.BLL
             var checkPassWord = RSAHelper.Decrypt(model.PassWord);
 
             //1非对称解密前端. 2-加密密码保存 3下次请求api资源，前端直接通过token 跟redis里面token对比
-            tb_user findUser = userDAL.FirstOrDefault(m => m.userName == checkUserName && m.isEnable);
+            tb_user findUser = await userDAL.FirstOrDefaultAsync(m => m.userName == checkUserName && m.isEnable);
 
             if (findUser == null)
                 return ResponseHelper.GetOkResponse(null, "用户名或密码错误", -1);
@@ -99,20 +99,18 @@ namespace AspNet.JwtLearning.BLL
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseResult Register(tb_user user)
+        public async Task<ResponseResult> Register(tb_user user)
         {
             if (user == null || string.IsNullOrEmpty(user.userName) || string.IsNullOrEmpty(user.passWord))
-            {
                 return ResponseHelper.GetErrorResponse("请输入用户名和密码");
-            }
 
             var realUserName = RSAHelper.Decrypt(user.userName);
-            if (userDAL.Any(m => m.userName == realUserName))
+            if (await userDAL.AnyAsync(m => m.userName == realUserName))
                 return ResponseHelper.GetErrorResponse("账户已存在");
 
             user.userName = realUserName;
             user.addTime = DateTime.Now;
-            if (!userDAL.Add(user))
+            if (! await userDAL.AddAsync(user))
                 return ResponseHelper.GetErrorResponse("系统异常,请稍后重试");
                 
             return ResponseHelper.GetOkResponse("创建用户成功");
@@ -124,15 +122,15 @@ namespace AspNet.JwtLearning.BLL
         /// <param name="menuId"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public ResponseResult GetMenuBtnRight(int userId,int menuId)
+        public async Task<ResponseResult> GetMenuBtnRight(int userId,int menuId)
         {
             var ret = new List<MenuBtnInfoClass>();
-            var systemBtns = RedisBLL.GetSysMenuButtons();
+            var systemBtns = await RedisBLL.GetSysMenuButtons();
             if (systemBtns.Count <= 0)
                 return ResponseHelper.GetOkResponse(ret);
 
-            var roleId = RedisBLL.GetRoleId(userId);
-            var roleBtns = RedisBLL.GetRoleMenuButtons().Where(m => m.roleId == roleId && m.menuId == menuId).ToList();
+            var roleId = await RedisBLL.GetRoleId(userId);
+            var roleBtns = (await RedisBLL.GetRoleMenuButtons()).Where(m => m.roleId == roleId && m.menuId == menuId).ToList();
             if (roleBtns.Count<=0)
                 return ResponseHelper.GetOkResponse(ret);
 

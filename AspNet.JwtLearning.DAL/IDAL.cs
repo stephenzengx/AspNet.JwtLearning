@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace AspNet.JwtLearning.DAL
 {
     public interface IDAL<T> where T :class
     {
 
-        T FirstOrDefault(Expression<Func<T, bool>> wherePredicate);
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> wherePredicate);
 
-        bool Any(Expression<Func<T, bool>> wherePredicate);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> wherePredicate);
 
-        int Count(Expression<Func<T, bool>> wherePredicate);
+        Task<int> CountAsync(Expression<Func<T, bool>> wherePredicate);
 
-        bool Add(T entity);
+        Task<bool> AddAsync(T entity);
 
-        bool Update(T entity);
+        Task<bool> UpdateAsync(T entity);
 
-        bool Delete(int Id);
+        Task<bool> DeleteAsync(int Id);
 
-        List<T> GetList(Expression<Func<T, bool>> wherePredicate);
+        Task<List<T>> GetListAsync(Expression<Func<T, bool>> wherePredicate);
 
         //默认升序
         List<T> GetListByPage<TOrderFiled>(int pageIndex, int pageSize, Expression<Func<T, bool>> wherePredicate, Expression<Func<T, TOrderFiled>> orderExpression, out int totalCount, SortOrder sortOrder);

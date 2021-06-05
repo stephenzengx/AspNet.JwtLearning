@@ -3,6 +3,7 @@ using AspNet.JwtLearning.Helpers;
 using AspNet.JwtLearning.Models;
 using AspNet.JwtLearning.Utility.BaseHelper;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace AspNet.JwtLearning.Controllers
@@ -12,7 +13,7 @@ namespace AspNet.JwtLearning.Controllers
     /// </summary>
     public class RoleController : ApiController
     {
-        public RoleBLL roleBLL;
+        private readonly RoleBLL roleBLL; //依赖注入属性 私有只读
 
         /// <summary>
         /// 构造方法
@@ -29,9 +30,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="tenantId"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage AdminRoleList(int tenantId=0)
+        public async Task<HttpResponseMessage> AdminRoleList(int tenantId=0)
         {
-            var list = roleBLL.GetAdminRoleInfoList(tenantId);
+            var list = await roleBLL.GetAdminRoleInfoList(tenantId);
            
             return ResponseFormat.GetResponse(ResponseHelper.GetOkResponse(list));
         }
@@ -42,9 +43,9 @@ namespace AspNet.JwtLearning.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public HttpResponseMessage AdminAuthMenuByIds([FromBody] AdminAuthClass model)
+        public async Task<HttpResponseMessage> AdminAuthMenuByIds([FromBody] AdminAuthClass model)
         {
-            var ret = roleBLL.AdminAuthMenuByIds(model);
+            var ret = await roleBLL.AdminAuthMenuByIds(model);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -54,9 +55,9 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public HttpResponseMessage AdminAuthApis([FromBody] AdminAuthClass model)
+        public async Task<HttpResponseMessage> AdminAuthApis([FromBody] AdminAuthClass model)
         {
-            var ret = roleBLL.AdminAuthApiByIds(model);
+            var ret = await roleBLL.AdminAuthApiByIds(model);
 
             return ResponseFormat.GetResponse(ret);
         }
@@ -66,9 +67,9 @@ namespace AspNet.JwtLearning.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public HttpResponseMessage AdminAuthBtns([FromBody] AdminAuthClass model)
+        public async Task<HttpResponseMessage> AdminAuthBtns([FromBody] AdminAuthClass model)
         {
-            var ret = roleBLL.AdminAuthBtnByIds(model);
+            var ret = await roleBLL.AdminAuthBtnByIds(model);
 
             return ResponseFormat.GetResponse(ret);
         }

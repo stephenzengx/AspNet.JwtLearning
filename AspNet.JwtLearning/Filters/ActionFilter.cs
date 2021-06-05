@@ -18,7 +18,7 @@ namespace AspNet.JwtLearning.Filters
         /// Action过滤器
         /// </summary>
         /// <param name="context"></param>
-        public override void OnActionExecuted(HttpActionExecutedContext context)
+        public override async void OnActionExecuted(HttpActionExecutedContext context)
         {
             //webapi 获得 controller和actionname  
             string controllerName = context.ActionContext.ControllerContext.ControllerDescriptor.ControllerName;
@@ -41,7 +41,7 @@ namespace AspNet.JwtLearning.Filters
             if (model == null || model.UserId <= 0)
                 throw new ArgumentException("userinfo format error!");
 
-            var sysApis = RedisBLL.GetSysApiInfos();
+            var sysApis = await RedisBLL.GetSysApiInfos();
             var selSysApi = sysApis.FirstOrDefault(m => m.controllerName == controllerName && m.actionName == actionName);
             if (selSysApi == null)
             {                
@@ -50,11 +50,11 @@ namespace AspNet.JwtLearning.Filters
                 return;
             }
 
-            var roleId = RedisBLL.GetUserRoles().FirstOrDefault(m => m.userId == model.UserId)?.roleId;
+            var roleId = (await RedisBLL.GetUserRoles()).FirstOrDefault(m => m.userId == model.UserId)?.roleId;
             if (roleId <= 0)
                 throw new ArgumentException("userId not bind role");
 
-            if (null == RedisBLL.GetRoleApiInfos().FirstOrDefault(m => m.roleId == roleId && m.apiId == selSysApi.apiId))
+            if (null == (await RedisBLL.GetRoleApiInfos()).FirstOrDefault(m => m.roleId == roleId && m.apiId == selSysApi.apiId))
                 context.Response = ResponseFormat.GetForbiddenResponseInstance();  
             
             base.OnActionExecuted(context);
